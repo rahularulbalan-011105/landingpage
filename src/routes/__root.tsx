@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { initLandingTracker } from "../lib/landing-tracker";
 
 function NotFoundComponent() {
   return (
@@ -130,6 +131,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // Record a landing page view once per tab-session (client-only).
+  useEffect(() => {
+    initLandingTracker();
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />

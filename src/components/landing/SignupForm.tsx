@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { submitBetaSignup, betaSignupSchema } from "@/lib/beta-signup";
+import { ctrack } from "@/lib/landing-tracker";
 
 type Props = {
   variant?: "hero" | "cta";
@@ -28,6 +29,7 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setErrorMsg(null);
+    ctrack("early_access_click");   // user attempted the beta signup
 
     const parsed = betaSignupSchema.safeParse({
       email,
@@ -42,6 +44,7 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
     setStatus("loading");
     try {
       await submitBetaSignup(parsed.data);
+      ctrack("email_submitted", parsed.data.email);   // successful signup
       setStatus("success");
     } catch (err) {
       console.error(err);
