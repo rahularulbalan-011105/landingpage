@@ -13,21 +13,21 @@ import { Footer } from "@/components/landing/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Build any robot you imagine. Watch it run. | AtumX" },
+      { title: "Build any robot you imagine. Watch it run. | Constructa" },
       {
         name: "description",
         content:
-          "Free-form 3D robot building with real physics. Browser-based. By the team behind SUBO, used in 500+ schools.",
+          "Free-form 3D robot building with real physics — a browser workshop for young builders. By the team behind SUBO, used in 500+ schools.",
       },
-      { property: "og:title", content: "Build any robot you imagine. Watch it run. | AtumX" },
+      { property: "og:title", content: "Build any robot you imagine. Watch it run. | Constructa" },
       {
         property: "og:description",
         content:
-          "Free-form 3D robot building with real physics. Browser-based. By the team behind SUBO, used in 500+ schools.",
+          "Free-form 3D robot building with real physics — a browser workshop for young builders. By the team behind SUBO, used in 500+ schools.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
-      { name: "twitter:title", content: "Build any robot you imagine. Watch it run. | AtumX" },
+      { name: "twitter:title", content: "Build any robot you imagine. Watch it run. | Constructa" },
       {
         name: "twitter:description",
         content:

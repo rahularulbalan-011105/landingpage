@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { submitBetaSignup, betaSignupSchema } from "@/lib/beta-signup";
 import { ctrack } from "@/lib/landing-tracker";
+import { Mascot } from "./Mascot";
 
 type Props = {
   variant?: "hero" | "cta";
@@ -21,15 +22,26 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
   const [userType, setUserType] = useState("");
   const [robotIdea, setRobotIdea] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle"
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Frontend-only: Constructa needs a big screen, so we tailor the copy for
+  // phone visitors (we email them a link to open it on a computer).
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 820px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setErrorMsg(null);
-    ctrack("early_access_click");   // user attempted the beta signup
+    ctrack("early_access_click"); // user attempted the beta signup
 
     const parsed = betaSignupSchema.safeParse({
       email,
@@ -44,7 +56,7 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
     setStatus("loading");
     try {
       await submitBetaSignup(parsed.data);
-      ctrack("email_submitted", parsed.data.email);   // successful signup
+      ctrack("email_submitted", parsed.data.email); // successful signup
       setStatus("success");
     } catch (err) {
       console.error(err);
@@ -57,15 +69,20 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
     return (
       <div
         className={[
-          "w-full",
-          variant === "cta" ? "text-center" : "text-left",
+          "comic-outline bg-white p-6 sm:p-7 w-full max-w-[560px]",
+          variant === "cta" ? "mx-auto text-center" : "text-left",
         ].join(" ")}
       >
-        <h3 className="text-[32px] font-medium text-foreground tracking-tight">
-          You're in.
-        </h3>
-        <p className="mt-3 text-[16px] text-text-secondary leading-relaxed max-w-md mx-auto">
-          We'll send your access link within 7 days. Check your email.
+        <div className={`flex items-center gap-3 ${variant === "cta" ? "justify-center" : ""}`}>
+          <Mascot size={54} mood="wow" className="animate-bob shrink-0" />
+          <h3 className="font-display text-[30px] font-extrabold text-foreground tracking-tight">
+            You're in! 🎉
+          </h3>
+        </div>
+        <p className="mt-3 text-[15px] text-text-secondary leading-relaxed font-medium">
+          Check your email for your <span className="font-bold text-primary">workshop key</span>.
+          When it lands, open the link on a <span className="font-bold">computer</span> — Constructa
+          needs a big screen to build big robots. 🖥️
         </p>
       </div>
     );
@@ -75,43 +92,65 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
 
   return (
     <div className={`w-full flex flex-col ${align}`}>
+      {/* Mascot speech bubble — the imagination hook */}
+      <div className={`mb-3 flex items-end gap-2 ${variant === "cta" ? "justify-center" : ""}`}>
+        <Mascot size={40} mood="happy" className="shrink-0" />
+        <span className="comic-outline-sm bg-[#FFD34E] px-3 py-1.5 text-[13px] font-bold text-ink">
+          Psst… what robot would <span className="text-primary">you</span> build?
+        </span>
+      </div>
+
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-[560px] flex flex-col sm:flex-row gap-2 sm:gap-0"
+        className="w-full max-w-[560px] flex flex-col gap-2.5"
       >
+        {/* Robot idea — the hook, shown up front */}
         <input
-          type="email"
-          required
-          placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 sm:w-[320px] h-12 bg-surface-1 border border-border rounded-md sm:rounded-r-none px-4 text-[16px] text-foreground placeholder:text-text-tertiary focus:outline-none focus:border-[#FF6B35] transition-colors duration-200 ease-out-soft"
+          type="text"
+          placeholder="A six-legged crawler that climbs stairs…"
+          value={robotIdea}
+          onChange={(e) => setRobotIdea(e.target.value)}
+          maxLength={2000}
+          className="comic-outline-sm w-full h-12 bg-white px-4 text-[15px] font-medium text-foreground placeholder:text-text-tertiary focus:outline-none focus:border-primary"
         />
-        <button
-          type="submit"
-          disabled={status === "loading"}
-          className="h-12 bg-[#FF6B35] text-[#0A0A0A] text-[15px] font-medium px-6 rounded-md sm:rounded-l-none hover:brightness-110 transition-all duration-200 ease-out-soft disabled:opacity-60"
-        >
-          {status === "loading" ? "Sending…" : "Get early access"}
-        </button>
+
+        <div className="flex flex-col sm:flex-row gap-2.5">
+          <input
+            type="email"
+            required
+            placeholder="your@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="comic-outline-sm flex-1 h-12 bg-white px-4 text-[16px] font-medium text-foreground placeholder:text-text-tertiary focus:outline-none focus:border-primary"
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="comic-btn h-12 bg-primary text-white text-[15px] font-bold px-6 whitespace-nowrap"
+          >
+            {status === "loading" ? "Opening…" : "Get my key 🔑"}
+          </button>
+        </div>
       </form>
 
       {errorMsg && (
-        <p className="mt-3 text-[13px] text-[#FF6B35]">{errorMsg}</p>
+        <p className="mt-3 text-[13px] font-semibold text-primary">{errorMsg}</p>
       )}
 
-      <p className="mt-4 text-[13px] text-text-tertiary">
-        Free during beta · No spam · No downloads
+      <p className="mt-3 text-[13px] font-semibold text-text-tertiary">
+        {isMobile
+          ? "🖥️ On your phone? Drop your email — we'll send a link to open Constructa on a computer."
+          : "Free during beta · No spam · No downloads"}
       </p>
 
       {expandable && (
-        <div className={`w-full max-w-[560px] mt-4 ${variant === "cta" ? "text-center" : ""}`}>
+        <div className={`w-full max-w-[560px] mt-3 ${variant === "cta" ? "text-center" : ""}`}>
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="text-[14px] text-text-secondary hover:text-foreground hover:underline underline-offset-4 transition-colors duration-200 ease-out-soft"
+            className="text-[14px] font-semibold text-text-secondary hover:text-primary underline underline-offset-4 transition-colors duration-200 ease-out-soft"
           >
-            {expanded ? "Hide details ←" : "Tell us about yourself →"}
+            {expanded ? "Hide ←" : "Tell us who you are →"}
           </button>
 
           <div
@@ -121,36 +160,22 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
             }}
           >
             <div className="overflow-hidden">
-              <div className="pt-6 space-y-4 text-left">
-                <div>
-                  <label className="block text-[12px] uppercase tracking-[0.1em] text-text-tertiary font-mono mb-2">
-                    I am a…
-                  </label>
-                  <select
-                    value={userType}
-                    onChange={(e) => setUserType(e.target.value)}
-                    className="w-full h-12 bg-surface-1 border border-border rounded-md px-4 text-[15px] text-foreground focus:outline-none focus:border-[#FF6B35] transition-colors duration-200 ease-out-soft"
-                  >
-                    <option value="">Select one</option>
-                    {USER_TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[12px] uppercase tracking-[0.1em] text-text-tertiary font-mono mb-2">
-                    Describe a robot you want to build (optional)
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={robotIdea}
-                    onChange={(e) => setRobotIdea(e.target.value)}
-                    placeholder="A six-legged crawler that climbs stairs…"
-                    className="w-full bg-surface-1 border border-border rounded-md px-4 py-3 text-[15px] text-foreground placeholder:text-text-tertiary focus:outline-none focus:border-[#FF6B35] transition-colors duration-200 ease-out-soft resize-none"
-                  />
-                </div>
+              <div className="pt-5 text-left">
+                <label className="block text-[13px] font-bold text-ink mb-2">
+                  I am a…
+                </label>
+                <select
+                  value={userType}
+                  onChange={(e) => setUserType(e.target.value)}
+                  className="comic-outline-sm w-full h-12 bg-white px-4 text-[15px] font-medium text-foreground focus:outline-none focus:border-primary"
+                >
+                  <option value="">Select one</option>
+                  {USER_TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>

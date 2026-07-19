@@ -1,51 +1,38 @@
 import { useReveal } from "@/hooks/use-reveal";
 import { SignupForm } from "./SignupForm";
+import { Mascot } from "./Mascot";
 
 export function FinalCta() {
   const ref = useReveal<HTMLDivElement>();
   return (
     <section
       id="cta"
-      className="relative bg-background pt-40 sm:pt-[160px] pb-40 sm:pb-[160px] overflow-hidden"
+      className="relative bg-surface-2 halftone pt-40 sm:pt-[160px] pb-40 sm:pb-[160px] overflow-hidden"
     >
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 50%, rgba(255,107,53,0.06) 0%, transparent 50%)",
-        }}
-      />
-      <div className="relative mx-auto max-w-[720px] px-6 sm:px-8 text-center">
-        <div ref={ref} className="reveal flex flex-col items-center">
-          <p className="font-mono text-[13px] uppercase tracking-[0.15em] text-[#FF6B35]">
-            Join the beta
-          </p>
+      <div className="relative mx-auto max-w-[760px] px-6 sm:px-8">
+        <div ref={ref} className="reveal comic-outline bg-white p-8 sm:p-12 flex flex-col items-center text-center">
+          <Mascot size={76} mood="wow" className="animate-bob" />
+          <span className="comic-tag mt-4">🎮 Join the beta</span>
           <h2
-            className="mt-5 text-foreground font-medium"
+            className="mt-5 font-display text-foreground font-extrabold"
             style={{
-              fontSize: "clamp(40px, 6vw, 72px)",
-              lineHeight: 1.02,
-              letterSpacing: "-0.03em",
+              fontSize: "clamp(38px, 6vw, 68px)",
+              lineHeight: 0.98,
+              letterSpacing: "-0.02em",
             }}
           >
             Ready to build
             <br />
-            something{" "}
-            <em
-              style={{ color: "#FF6B35", fontStyle: "italic", fontWeight: 500 }}
-            >
-              weird
-            </em>
-            ?
+            something <span className="text-primary">weird</span>?
           </h2>
           <p
-            className="mt-6 text-[18px] sm:text-[20px] text-text-secondary leading-relaxed"
-            style={{ maxWidth: "500px" }}
+            className="mt-6 text-[18px] sm:text-[20px] text-text-secondary leading-relaxed font-medium"
+            style={{ maxWidth: "460px" }}
           >
-            Get early access. Takes ten seconds. Free during beta.
+            Grab your workshop key. Takes ten seconds. Free during beta.
           </p>
 
-          <div className="mt-12 flex justify-center w-full">
+          <div className="mt-10 flex justify-center w-full">
             <SignupForm variant="cta" expandable={false} />
           </div>
         </div>

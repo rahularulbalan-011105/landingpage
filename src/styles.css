@@ -5,13 +5,14 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Fredoka", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Baloo 2", "Fredoka", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fredoka", ui-sans-serif, system-ui, sans-serif;
 
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -24,7 +25,7 @@
   --color-popover: var(--surface-1);
   --color-popover-foreground: var(--foreground);
   --color-primary: var(--accent);
-  --color-primary-foreground: var(--background);
+  --color-primary-foreground: #FFFFFF;
   --color-secondary: var(--surface-2);
   --color-secondary-foreground: var(--foreground);
   --color-accent-color: var(--accent);
@@ -33,38 +34,46 @@
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
+  --color-ink: var(--ink);
+  --color-sky: var(--sky);
   --color-border: var(--border);
   --color-input: var(--border);
   --color-ring: var(--accent);
   --color-destructive: oklch(0.62 0.22 27);
-  --color-destructive-foreground: var(--foreground);
+  --color-destructive-foreground: #FFFFFF;
 }
 
+/* Constructa — white + orange comic theme.
+   Both :root and .dark hold the SAME light values so the app renders light
+   regardless of the .dark class still on <html>. */
 :root {
-  /* Direct hex equivalents per spec */
-  --background: #0A0A0A;
-  --surface-1: #141414;
-  --surface-2: #1F1F1F;
-  --foreground: #F5F5F5;
-  --text-secondary: #A0A0A0;
-  --text-tertiary: #6B6B6B;
-  --border: #262626;
-  --border-hover: #404040;
-  --accent: #FF6B35;
-  --accent-glow: rgba(255, 107, 53, 0.15);
+  --background: #FFFFFF;   /* white canvas */
+  --surface-1: #FFF6F0;    /* warm off-white panels */
+  --surface-2: #FFEFE4;    /* deeper warm panel */
+  --foreground: #1A1A1A;   /* dark charcoal body text (readable) */
+  --text-secondary: #4A4A4A;
+  --text-tertiary: #7A7A7A;
+  --border: #111111;       /* comic-black outline */
+  --border-hover: #FF6B35;
+  --accent: #FF6B35;       /* orange */
+  --accent-glow: rgba(255, 107, 53, 0.18);
+  --ink: #111111;          /* thick comic-black outline / shadow */
+  --sky: #29ABE2;          /* mascot blue secondary accent */
 }
 
 .dark {
-  --background: #0A0A0A;
-  --surface-1: #141414;
-  --surface-2: #1F1F1F;
-  --foreground: #F5F5F5;
-  --text-secondary: #A0A0A0;
-  --text-tertiary: #6B6B6B;
-  --border: #262626;
-  --border-hover: #404040;
+  --background: #FFFFFF;
+  --surface-1: #FFF6F0;
+  --surface-2: #FFEFE4;
+  --foreground: #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-tertiary: #7A7A7A;
+  --border: #111111;
+  --border-hover: #FF6B35;
   --accent: #FF6B35;
-  --accent-glow: rgba(255, 107, 53, 0.15);
+  --accent-glow: rgba(255, 107, 53, 0.18);
+  --ink: #111111;
+  --sky: #29ABE2;
 }
 
 @layer base {
@@ -83,18 +92,17 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "ss01", "cv11";
   }
 
   ::selection {
     background-color: var(--accent);
-    color: var(--background);
+    color: #FFFFFF;
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 3px solid var(--ink);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 }
 
@@ -111,9 +119,106 @@
     transform: translateY(0);
   }
 
+  /* Respect reduced-motion: show everything immediately, no entrance motion. */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .word-rise {
+      opacity: 1;
+      animation: none;
+    }
+    .animate-bob,
+    .animate-scroll-line {
+      animation: none;
+    }
+  }
+
   .ease-out-soft {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  /* --- Comic system --- */
+
+  /* Thick black outline + hard offset shadow (the signature look). */
+  .comic-outline {
+    border: 3px solid var(--ink);
+    border-radius: var(--radius-lg);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .comic-outline-sm {
+    border: 2.5px solid var(--ink);
+    border-radius: var(--radius-md);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  /* Comic button — filled, outlined, presses down on click. */
+  .comic-btn {
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition:
+      transform 120ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 120ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      filter 120ms ease;
+  }
+  .comic-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0 var(--ink);
+    filter: brightness(1.03);
+  }
+  .comic-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  .comic-btn:disabled {
+    opacity: 0.6;
+    transform: none;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  /* Halftone dot texture for panel backgrounds. */
+  .halftone {
+    background-image: radial-gradient(var(--accent-glow) 1.4px, transparent 1.5px);
+    background-size: 14px 14px;
+  }
+  .halftone-ink {
+    background-image: radial-gradient(rgba(17, 17, 17, 0.08) 1.4px, transparent 1.5px);
+    background-size: 14px 14px;
+  }
+
+  /* Sticker-style eyebrow tag (replaces the old mono uppercase labels). */
+  .comic-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--accent);
+    border: 2.5px solid var(--ink);
+    border-radius: 999px;
+    box-shadow: 3px 3px 0 var(--ink);
+    padding: 0.3em 0.85em;
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+.animate-bob {
+  animation: bob 3s ease-in-out infinite;
 }
 
 @keyframes scroll-line {

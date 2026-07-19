@@ -2,19 +2,25 @@ import { useReveal } from "@/hooks/use-reveal";
 
 const ROWS = [
   {
-    label: "01 Building",
+    n: "01",
+    emoji: "🎨",
     heading: "Free-form, not pre-built",
     body: "Most robot tools give you templates. We give you a blank 3D canvas. Build any shape. Attach any sensor in any position. Your imagination is the only constraint.",
+    tint: "var(--sky)",
   },
   {
-    label: "02 Physics",
+    n: "02",
+    emoji: "⚙️",
     heading: "Real physics, not animations",
-    body: "Your robot walks, falls, drives, flies based on how you actually built it. Bad designs fail. Good designs work. Same as the real world.",
+    body: "Your robot walks, falls, drives, flies based on how you actually built it. Wobbly designs fail. Clever designs work. Same as the real world.",
+    tint: "var(--accent)",
   },
   {
-    label: "03 Access",
-    heading: "Browser-based, no downloads",
-    body: "Open it in Chrome, Edge, Firefox, Safari. Any laptop, any operating system. No installs. No payments. Free during beta.",
+    n: "03",
+    emoji: "🌐",
+    heading: "Runs in your browser",
+    body: "Open it in Chrome, Edge, Firefox or Safari — no installs, no payments, free during beta. Just bring a computer (Constructa needs a big screen to build big robots).",
+    tint: "#FFD34E",
   },
 ];
 
@@ -24,31 +30,23 @@ export function WhatsDifferent() {
     <section className="bg-background pt-40 sm:pt-[160px]">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
         <div ref={ref} className="reveal">
-          <p className="font-mono text-[13px] uppercase tracking-[0.15em] text-[#FF6B35]">
-            What makes it different
-          </p>
+          <span className="comic-tag">💥 What makes it different</span>
           <h2
-            className="mt-5 text-foreground font-medium"
+            className="mt-5 font-display text-foreground font-extrabold"
             style={{
               fontSize: "clamp(36px, 5.5vw, 64px)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.03em",
+              lineHeight: 1.02,
+              letterSpacing: "-0.02em",
               maxWidth: "900px",
             }}
           >
-            Three things{" "}
-            <em
-              style={{ color: "#FF6B35", fontStyle: "italic", fontWeight: 500 }}
-            >
-              no other tool does
-            </em>
-            .
+            Three things <span className="text-primary">no other tool does</span>.
           </h2>
         </div>
 
-        <div className="mt-24 flex flex-col">
-          {ROWS.map((r, i) => (
-            <Row key={r.label} {...r} isLast={i === ROWS.length - 1} />
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {ROWS.map((r) => (
+            <Row key={r.n} {...r} />
           ))}
         </div>
       </div>
@@ -57,38 +55,36 @@ export function WhatsDifferent() {
 }
 
 function Row({
-  label,
+  n,
+  emoji,
   heading,
   body,
-  isLast,
+  tint,
 }: {
-  label: string;
+  n: string;
+  emoji: string;
   heading: string;
   body: string;
-  isLast: boolean;
+  tint: string;
 }) {
   const ref = useReveal<HTMLDivElement>();
   return (
     <div
       ref={ref}
-      className={[
-        "reveal grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 py-16",
-        isLast ? "" : "border-b border-border",
-      ].join(" ")}
+      className="reveal comic-outline bg-white p-8 flex flex-col transition-transform duration-200 ease-out-soft hover:-translate-y-1"
     >
-      <div className="md:col-span-3">
-        <p className="font-mono text-[13px] uppercase tracking-[0.1em] text-[#FF6B35]">
-          {label}
-        </p>
-      </div>
-      <div className="md:col-span-8 md:col-start-5">
-        <h3 className="text-[28px] sm:text-[32px] font-medium text-foreground tracking-tight">
-          {heading}
-        </h3>
-        <p className="mt-4 text-[18px] text-text-secondary leading-relaxed max-w-[640px]">
-          {body}
-        </p>
-      </div>
+      <span
+        className="flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-ink text-[26px]"
+        style={{ background: tint }}
+      >
+        {emoji}
+      </span>
+      <h3 className="mt-6 font-display text-[26px] font-extrabold text-foreground tracking-tight">
+        {heading}
+      </h3>
+      <p className="mt-3 text-[16px] text-text-secondary leading-relaxed font-medium">
+        {body}
+      </p>
     </div>
   );
 }

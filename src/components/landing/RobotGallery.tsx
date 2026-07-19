@@ -2,29 +2,39 @@ import { useReveal } from "@/hooks/use-reveal";
 
 const STATEMENTS = [
   {
-    label: "01 / 05",
+    n: "01",
+    emoji: "🦿",
     heading: "A four-legged robot that walks.",
     body: "Build the frame. Attach motors at the joints. Code the gait pattern. Watch it figure out balance with real physics.",
+    tint: "var(--sky)",
   },
   {
-    label: "02 / 05",
+    n: "02",
+    emoji: "🏎️",
     heading: "A car that follows a line.",
     body: "Wire IR sensors to the bottom. Read the values. Tell it to turn when it sees black. The classic project, no hardware needed.",
+    tint: "#FFD34E",
   },
   {
-    label: "03 / 05",
+    n: "03",
+    emoji: "🦾",
     heading: "A robotic arm that picks things up.",
     body: "Stack rotational joints. Add a gripper. Move it with code. Drop the object on purpose. Or by accident.",
+    tint: "var(--accent)",
   },
   {
-    label: "04 / 05",
+    n: "04",
+    emoji: "🧱",
     heading: "A robot that avoids walls.",
     body: "Ultrasonic sensor on the front. Read the distance. Turn before you hit something. The first algorithm that feels like AI.",
+    tint: "#7BD389",
   },
   {
-    label: "05 / 05",
+    n: "05",
+    emoji: "✨",
     heading: "Whatever you imagine next.",
     body: "A six-wheeled rover. A flying drone frame. A walking spider. A robot dog. The tool doesn't care what you build. Neither do we.",
+    tint: "var(--sky)",
   },
 ];
 
@@ -34,31 +44,24 @@ export function RobotGallery() {
     <section className="bg-background pt-40 sm:pt-[160px]">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
         <div ref={ref} className="reveal">
-          <p className="font-mono text-[13px] uppercase tracking-[0.15em] text-[#FF6B35]">
-            The capabilities
-          </p>
+          <span className="comic-tag">🤖 The capabilities</span>
           <h2
-            className="mt-5 text-foreground font-medium"
+            className="mt-5 font-display text-foreground font-extrabold"
             style={{
               fontSize: "clamp(36px, 5.5vw, 64px)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.03em",
+              lineHeight: 1.02,
+              letterSpacing: "-0.02em",
             }}
           >
             Anything that moves.
             <br />
-            <em
-              style={{ color: "#FF6B35", fontStyle: "italic", fontWeight: 500 }}
-            >
-              You build it
-            </em>
-            .
+            <span className="text-primary">You build it.</span>
           </h2>
         </div>
 
-        <div className="mt-24 flex flex-col">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-8">
           {STATEMENTS.map((s, i) => (
-            <Statement key={s.label} {...s} isFirst={i === 0} />
+            <Statement key={s.n} {...s} wide={i === STATEMENTS.length - 1} />
           ))}
         </div>
       </div>
@@ -67,45 +70,49 @@ export function RobotGallery() {
 }
 
 function Statement({
-  label,
+  n,
+  emoji,
   heading,
   body,
-  isFirst,
+  tint,
+  wide,
 }: {
-  label: string;
+  n: string;
+  emoji: string;
   heading: string;
   body: string;
-  isFirst: boolean;
+  tint: string;
+  wide: boolean;
 }) {
   const ref = useReveal<HTMLDivElement>();
   return (
     <div
       ref={ref}
       className={[
-        "reveal grid grid-cols-1 md:grid-cols-10 gap-6 md:gap-8",
-        isFirst ? "pt-0" : "pt-20 border-t border-border mt-20",
+        "reveal comic-outline bg-white p-8 flex flex-col transition-transform duration-200 ease-out-soft hover:-translate-y-1",
+        wide ? "sm:col-span-2" : "",
       ].join(" ")}
     >
-      <div className="md:col-span-3">
-        <p className="font-mono text-[13px] uppercase tracking-[0.1em] text-[#FF6B35]">
-          {label}
-        </p>
-      </div>
-      <div className="md:col-span-7">
-        <h3
-          className="text-foreground font-medium tracking-tight"
-          style={{
-            fontSize: "clamp(28px, 3.5vw, 40px)",
-            lineHeight: 1.1,
-            letterSpacing: "-0.02em",
-          }}
+      <div className="flex items-center gap-3">
+        <span
+          className="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-ink text-[22px]"
+          style={{ background: tint }}
         >
-          {heading}
-        </h3>
-        <p className="mt-4 text-[17px] text-text-secondary leading-relaxed max-w-[640px]">
-          {body}
-        </p>
+          {emoji}
+        </span>
+        <span className="font-display text-[15px] font-bold text-text-tertiary">
+          {n} / 05
+        </span>
       </div>
+      <h3
+        className="mt-5 font-display text-foreground font-extrabold tracking-tight"
+        style={{ fontSize: "clamp(24px, 3vw, 34px)", lineHeight: 1.08 }}
+      >
+        {heading}
+      </h3>
+      <p className="mt-3 text-[16px] text-text-secondary leading-relaxed font-medium max-w-[640px]">
+        {body}
+      </p>
     </div>
   );
 }

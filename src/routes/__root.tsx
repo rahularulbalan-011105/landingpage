@@ -17,15 +17,15 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-medium text-foreground tracking-tight">404</h1>
-        <h2 className="mt-4 text-xl font-medium text-foreground">Page not found</h2>
+        <h1 className="font-display text-7xl font-extrabold text-primary tracking-tight">404</h1>
+        <h2 className="mt-4 font-display text-xl font-bold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-text-secondary">
           The page you're looking for doesn't exist.
         </p>
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
+            className="comic-btn inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white"
           >
             Go home
           </Link>
@@ -57,13 +57,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
+            className="comic-btn inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-[#404040]"
+            className="comic-btn inline-flex items-center justify-center rounded-full bg-background px-4 py-2 text-sm font-semibold text-foreground"
           >
             Go home
           </a>
@@ -76,7 +76,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 const FAVICON =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="%230A0A0A"/><text x="50%25" y="54%25" text-anchor="middle" dominant-baseline="middle" font-family="Geist, Inter, sans-serif" font-weight="600" font-size="40" fill="%23FF6B35">A</text></svg>`
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="3" y="3" width="58" height="58" rx="16" fill="%23FFFFFF" stroke="%23111111" stroke-width="4"/><text x="50%25" y="56%25" text-anchor="middle" dominant-baseline="middle" font-family="'Baloo 2', sans-serif" font-weight="800" font-size="42" fill="%23FF6B35" stroke="%23111111" stroke-width="1.2">C</text></svg>`
   );
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -84,17 +84,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#0A0A0A" },
-      { name: "author", content: "AtumX" },
-      { property: "og:site_name", content: "AtumX" },
+      { name: "theme-color", content: "#FF6B35" },
+      { name: "author", content: "Constructa by AtumX" },
+      { property: "og:site_name", content: "Constructa" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "AtumX Robot Forge" },
-      { property: "og:title", content: "AtumX Robot Forge" },
-      { name: "twitter:title", content: "AtumX Robot Forge" },
-      { name: "description", content: "AtumX Robot Forge is a browser-based 3D robot builder with real physics simulation." },
-      { property: "og:description", content: "AtumX Robot Forge is a browser-based 3D robot builder with real physics simulation." },
-      { name: "twitter:description", content: "AtumX Robot Forge is a browser-based 3D robot builder with real physics simulation." },
+      { title: "Constructa — Build any robot you imagine" },
+      { property: "og:title", content: "Constructa — Build any robot you imagine" },
+      { name: "twitter:title", content: "Constructa — Build any robot you imagine" },
+      { name: "description", content: "Constructa is a browser-based 3D robot workshop for young builders. Build any robot, watch it run, make it battle. By the team behind SUBO." },
+      { property: "og:description", content: "Constructa is a browser-based 3D robot workshop for young builders. Build any robot, watch it run, make it battle. By the team behind SUBO." },
+      { name: "twitter:description", content: "Constructa is a browser-based 3D robot workshop for young builders. Build any robot, watch it run, make it battle." },
       { property: "og:image", content: "/og-image.png" },
       { name: "twitter:image", content: "/og-image.png" },
     ],
@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap",
       },
     ],
   }),
