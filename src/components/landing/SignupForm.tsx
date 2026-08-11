@@ -59,6 +59,9 @@ function LaunchButton({ centered }: { centered?: boolean }) {
       <span className="mt-2 text-[12px] font-bold uppercase tracking-wide text-text-tertiary">
         Free · No login · Opens in your browser
       </span>
+      <span className={`comic-outline-sm mt-2 inline-flex items-center gap-1.5 bg-[#FFF3C4] px-2.5 py-1 text-[12px] font-bold text-ink ${centered ? "text-center" : ""}`}>
+        💻 Open the workshop on a desktop or laptop — Constructa needs a big screen.
+      </span>
     </div>
   );
 }
