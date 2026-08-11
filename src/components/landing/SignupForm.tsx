@@ -190,7 +190,7 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
             disabled={status === "loading"}
             className="comic-btn h-12 bg-primary text-white text-[15px] font-bold px-6 whitespace-nowrap"
           >
-            {status === "loading" ? "Opening…" : "Get my key 🔑"}
+            {status === "loading" ? "Sending…" : "Keep me posted 🔔"}
           </button>
         </div>
       </form>

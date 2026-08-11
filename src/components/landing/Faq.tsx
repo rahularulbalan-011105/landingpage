@@ -24,7 +24,7 @@ const QA = [
   },
   {
     q: "When do I get access?",
-    a: "We roll out in small batches. After you sign up, keep an eye on your inbox — your workshop key arrives soon. If you described a robot you'd build, we might build it and feature you.",
+    a: "Constructa is free to jump into right now — just hit Launch. Drop your email too and we'll send every new feature, release and tip straight to your inbox. If you described a robot you'd build, we might build it and feature you.",
   },
   {
     q: "Who is AtumX?",

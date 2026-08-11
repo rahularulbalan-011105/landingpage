@@ -43,10 +43,10 @@ export function Nav() {
             Why
           </a>
           <a
-            href="#cta"
+            href="https://constructa.atumx.in/?app=1"
             className="comic-btn inline-flex items-center justify-center bg-primary text-white text-[14px] font-bold px-5 py-2.5"
           >
-            Get your key 🔑
+            🚀 Launch
           </a>
         </div>
       </div>

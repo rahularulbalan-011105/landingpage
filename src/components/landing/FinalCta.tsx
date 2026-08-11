@@ -29,7 +29,7 @@ export function FinalCta() {
             className="mt-6 text-[18px] sm:text-[20px] text-text-secondary leading-relaxed font-medium"
             style={{ maxWidth: "460px" }}
           >
-            Grab your workshop key. Takes ten seconds. Free during beta.
+            Jump into the workshop now — or drop your email to get every update. Free, no login.
           </p>
 
           <div className="mt-10 flex justify-center w-full">
