@@ -42,7 +42,7 @@ function WhatsAppLink() {
 // blasts off on hover — that drops the user straight into the workshop.
 function LaunchButton({ centered }: { centered?: boolean }) {
   return (
-    <div className={`w-full max-w-[560px] ${centered ? "flex flex-col items-center" : ""}`}>
+    <div className={`flex flex-col w-full max-w-[560px] ${centered ? "items-center" : "items-start"}`}>
       <a
         href={APP_URL}
         className="comic-btn group relative inline-flex items-center justify-center gap-2.5 bg-[#FFD34E] text-ink text-[17px] font-extrabold h-14 px-7 overflow-hidden"
