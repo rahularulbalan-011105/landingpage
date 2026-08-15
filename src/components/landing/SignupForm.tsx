@@ -21,18 +21,49 @@ const USER_TYPES = [
 // (and is remembered), so this button drops the user straight into Constructa.
 const APP_URL = "https://constructa.atumx.in/?app=1";
 
-// Preserve attribution: forward the UTM/ref params that brought the user to the
-// landing on to the app, so a visit that arrived via ?utm_source=instagram is
-// still logged as instagram in the app (not as "landing page" via the referrer).
+// Map a referrer host to a source name (same buckets the app uses), so a visit
+// with no utm_source still gets attributed to the site that sent it.
+function inferSource(ref: string): string | null {
+  try {
+    if (!ref) return null;
+    const h = new URL(ref).hostname.toLowerCase();
+    if (h.includes("constructa") || h.includes("atumx")) return null; // our own domains
+    if (h.includes("instagram")) return "instagram";
+    if (h.includes("youtube") || h.includes("youtu.be")) return "youtube";
+    if (h.includes("whatsapp") || h.includes("wa.me")) return "whatsapp";
+    if (h.includes("facebook") || h.startsWith("fb.") || h.includes("fb.me")) return "facebook";
+    if (h.includes("linkedin")) return "linkedin";
+    if (h.includes("twitter") || h.includes("x.com") || h === "t.co") return "twitter";
+    if (h.includes("reddit")) return "reddit";
+    if (h.includes("google")) return "google";
+    if (h.includes("t.me") || h.includes("telegram")) return "telegram";
+    return h;
+  } catch {
+    return null;
+  }
+}
+
+// Preserve attribution for EVERY source: forward the UTM/ref params that brought
+// the user to the landing on to the app. If there's no utm_source (e.g. a plain
+// link shared on YouTube/Email), infer it from the referrer — otherwise the app
+// would log it as "landing page" via the landing-page referrer.
 function appUrlWithUtm(): string {
   if (typeof window === "undefined") return APP_URL;
   try {
     const p = new URLSearchParams(window.location.search);
-    const keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "ref"];
-    const fwd = keep
-      .filter((k) => p.get(k))
-      .map((k) => `${k}=${encodeURIComponent(p.get(k) as string)}`)
-      .join("&");
+    const out = new URLSearchParams();
+    for (const k of ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "ref"]) {
+      const v = p.get(k);
+      if (v) out.set(k, v);
+    }
+    if (!out.get("utm_source")) {
+      const inferred = inferSource(document.referrer);
+      if (inferred) {
+        out.set("utm_source", inferred);
+        if (!out.get("utm_medium")) out.set("utm_medium", "referral");
+      }
+    }
+    const fwd = out.toString();
     return fwd ? `${APP_URL}&${fwd}` : APP_URL;
   } catch {
     return APP_URL;
