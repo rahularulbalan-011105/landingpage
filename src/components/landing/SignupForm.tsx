@@ -20,6 +20,24 @@ const USER_TYPES = [
 // Direct link into the editor — ?app=1 tells the app to skip the landing gate
 // (and is remembered), so this button drops the user straight into Constructa.
 const APP_URL = "https://constructa.atumx.in/?app=1";
+
+// Preserve attribution: forward the UTM/ref params that brought the user to the
+// landing on to the app, so a visit that arrived via ?utm_source=instagram is
+// still logged as instagram in the app (not as "landing page" via the referrer).
+function appUrlWithUtm(): string {
+  if (typeof window === "undefined") return APP_URL;
+  try {
+    const p = new URLSearchParams(window.location.search);
+    const keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "ref"];
+    const fwd = keep
+      .filter((k) => p.get(k))
+      .map((k) => `${k}=${encodeURIComponent(p.get(k) as string)}`)
+      .join("&");
+    return fwd ? `${APP_URL}&${fwd}` : APP_URL;
+  } catch {
+    return APP_URL;
+  }
+}
 const WHATSAPP = "https://chat.whatsapp.com/Kxikh3QnPIaHW92hssMTRK?s=cl&p=a&ilr=1&amv=0";
 
 function WhatsAppLink() {
@@ -41,10 +59,13 @@ function WhatsAppLink() {
 // The creative, one-of-a-kind CTA — an arcade "LAUNCH" button whose rocket
 // blasts off on hover — that drops the user straight into the workshop.
 function LaunchButton({ centered }: { centered?: boolean }) {
+  // Compute the app URL on the client so the landing's UTM params ride along.
+  const [href, setHref] = useState(APP_URL);
+  useEffect(() => { setHref(appUrlWithUtm()); }, []);
   return (
     <div className={`flex flex-col w-full max-w-[560px] ${centered ? "items-center" : "items-start"}`}>
       <a
-        href={APP_URL}
+        href={href}
         className="comic-btn group relative inline-flex items-center justify-center gap-2.5 bg-[#FFD34E] text-ink text-[17px] font-extrabold h-14 px-7 overflow-hidden"
       >
         <span
