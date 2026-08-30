@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import logo from "@/assets/constructa-logo.jpeg";
+import { useAuth } from "@/lib/auth";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -35,19 +38,37 @@ export function Nav() {
             by AtumX
           </span>
         </a>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           <a
             href="#why"
             className="hidden sm:inline-block text-[15px] font-semibold text-text-secondary hover:text-primary transition-colors duration-200 ease-out-soft"
           >
             Why
           </a>
-          <a
-            href="https://constructa.atumx.in/?app=1"
-            className="comic-btn inline-flex items-center justify-center bg-primary text-white text-[14px] font-bold px-5 py-2.5"
-          >
-            🚀 Launch
-          </a>
+
+          {loading ? null : user ? (
+            <Link
+              to="/dashboard"
+              className="comic-btn inline-flex items-center justify-center bg-primary text-white text-[14px] font-bold px-5 py-2.5"
+            >
+              My robots
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-[15px] font-semibold text-text-secondary hover:text-primary transition-colors duration-200 ease-out-soft"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/signup"
+                className="comic-btn inline-flex items-center justify-center bg-primary text-white text-[14px] font-bold px-5 py-2.5"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

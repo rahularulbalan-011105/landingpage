@@ -38,12 +38,95 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string
+          content: Json
+          status: string
+          thumbnail: string | null
+          created_at: string
+          updated_at: string
+          completed_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title?: string
+          description?: string
+          content?: Json
+          status?: string
+          thumbnail?: string | null
+          created_at?: string
+          updated_at?: string
+          completed_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          description?: string
+          content?: Json
+          status?: string
+          thumbnail?: string | null
+          created_at?: string
+          updated_at?: string
+          completed_at?: string | null
+        }
+        Relationships: []
+      }
+      project_shares: {
+        Row: {
+          id: string
+          project_id: string
+          token: string
+          created_at: string
+          expires_at: string | null
+        }
+        Insert: {
+          id?: string
+          project_id: string
+          token: string
+          created_at?: string
+          expires_at?: string | null
+        }
+        Update: {
+          id?: string
+          project_id?: string
+          token?: string
+          created_at?: string
+          expires_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_shares_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_shared_project: {
+        Args: { share_token: string }
+        Returns: {
+          id: string
+          title: string
+          description: string
+          content: Json
+          status: string
+          created_at: string
+          updated_at: string
+          completed_at: string | null
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
