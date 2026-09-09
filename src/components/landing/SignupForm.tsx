@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { Link } from "@tanstack/react-router";
 import { submitBetaSignup, betaSignupSchema } from "@/lib/beta-signup";
 import { ctrack } from "@/lib/landing-tracker";
 import { Mascot } from "./Mascot";
@@ -90,13 +91,10 @@ function WhatsAppLink() {
 // The creative, one-of-a-kind CTA — an arcade "LAUNCH" button whose rocket
 // blasts off on hover — that drops the user straight into the workshop.
 function LaunchButton({ centered }: { centered?: boolean }) {
-  // Compute the app URL on the client so the landing's UTM params ride along.
-  const [href, setHref] = useState(APP_URL);
-  useEffect(() => { setHref(appUrlWithUtm()); }, []);
   return (
     <div className={`flex flex-col w-full max-w-[560px] ${centered ? "items-center" : "items-start"}`}>
-      <a
-        href={href}
+      <Link
+        to="/signup"
         className="comic-btn group relative inline-flex items-center justify-center gap-2.5 bg-[#FFD34E] text-ink text-[17px] font-extrabold h-14 px-7 overflow-hidden"
       >
         <span
@@ -105,11 +103,11 @@ function LaunchButton({ centered }: { centered?: boolean }) {
         >
           🚀
         </span>
-        Launch the workshop
+        Try Constructa Free
         <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
-      </a>
+      </Link>
       <span className="mt-2 text-[12px] font-bold uppercase tracking-wide text-text-tertiary">
-        Free · No login · Opens in your browser
+        Free · Sign up in seconds · Save your robots
       </span>
       <span className={`comic-outline-sm mt-2 inline-flex items-center gap-1.5 bg-[#FFF3C4] px-2.5 py-1 text-[12px] font-bold text-ink ${centered ? "text-center" : ""}`}>
         💻 Open the workshop on a desktop or laptop — Constructa needs a big screen.

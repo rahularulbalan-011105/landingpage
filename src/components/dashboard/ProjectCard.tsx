@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   RotateCcw,
   Loader2,
+  Globe2,
 } from "lucide-react";
 import type { Project } from "@/lib/projects";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +35,7 @@ export function ProjectCard({
   onDownload,
   onDelete,
   onToggleComplete,
+  onTogglePublish,
 }: {
   project: Project;
   busy?: boolean;
@@ -42,8 +44,10 @@ export function ProjectCard({
   onDownload: () => void;
   onDelete: () => void;
   onToggleComplete: () => void;
+  onTogglePublish: () => void;
 }) {
   const completed = project.status === "completed";
+  const isPublic = project.is_public;
 
   return (
     <div className="comic-outline group relative flex flex-col bg-background p-5 transition-transform duration-150 hover:-translate-y-1">
@@ -58,15 +62,22 @@ export function ProjectCard({
         <h3 className="font-display text-lg font-extrabold leading-tight text-foreground line-clamp-2">
           {project.title || "Untitled robot"}
         </h3>
-        <Badge
-          className={
-            completed
-              ? "shrink-0 border-2 border-ink bg-primary text-white"
-              : "shrink-0 border-2 border-ink bg-surface-2 text-foreground"
-          }
-        >
-          {completed ? "Completed" : "Draft"}
-        </Badge>
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <Badge
+            className={
+              completed
+                ? "border-2 border-ink bg-primary text-white"
+                : "border-2 border-ink bg-surface-2 text-foreground"
+            }
+          >
+            {completed ? "Completed" : "Draft"}
+          </Badge>
+          {isPublic && (
+            <Badge className="border-2 border-ink bg-sky text-white">
+              <Globe2 className="mr-1 h-3 w-3" /> Public
+            </Badge>
+          )}
+        </div>
       </div>
 
       {project.description && (
@@ -94,6 +105,13 @@ export function ProjectCard({
           Open <ArrowRight className="h-4 w-4" />
         </button>
 
+        <IconAction
+          label={isPublic ? "Remove from Community" : "Publish to Community"}
+          onClick={onTogglePublish}
+          active={isPublic}
+        >
+          <Globe2 className="h-4 w-4" />
+        </IconAction>
         <IconAction label="Share" onClick={onShare}>
           <Share2 className="h-4 w-4" />
         </IconAction>
@@ -118,11 +136,13 @@ function IconAction({
   label,
   onClick,
   danger,
+  active,
   children,
 }: {
   label: string;
   onClick: () => void;
   danger?: boolean;
+  active?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -131,10 +151,12 @@ function IconAction({
       title={label}
       aria-label={label}
       className={[
-        "inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-ink bg-background transition-colors",
-        danger
-          ? "text-destructive hover:bg-destructive hover:text-white"
-          : "text-foreground hover:bg-surface-2",
+        "inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-ink transition-colors",
+        active
+          ? "bg-sky text-white"
+          : danger
+            ? "bg-background text-destructive hover:bg-destructive hover:text-white"
+            : "bg-background text-foreground hover:bg-surface-2",
       ].join(" ")}
     >
       {children}

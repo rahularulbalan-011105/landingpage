@@ -65,7 +65,7 @@ export function Nav() {
                 to="/signup"
                 className="comic-btn inline-flex items-center justify-center bg-primary text-white text-[14px] font-bold px-5 py-2.5"
               >
-                Get Started
+                Try Constructa
               </Link>
             </>
           )}

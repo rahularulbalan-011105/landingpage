@@ -50,6 +50,12 @@ export type Database = {
           created_at: string
           updated_at: string
           completed_at: string | null
+          is_public: boolean
+          published_at: string | null
+          author_name: string | null
+          author_email: string | null
+          forked_from: string | null
+          likes_count: number
         }
         Insert: {
           id?: string
@@ -62,6 +68,12 @@ export type Database = {
           created_at?: string
           updated_at?: string
           completed_at?: string | null
+          is_public?: boolean
+          published_at?: string | null
+          author_name?: string | null
+          author_email?: string | null
+          forked_from?: string | null
+          likes_count?: number
         }
         Update: {
           id?: string
@@ -74,8 +86,40 @@ export type Database = {
           created_at?: string
           updated_at?: string
           completed_at?: string | null
+          is_public?: boolean
+          published_at?: string | null
+          author_name?: string | null
+          author_email?: string | null
+          forked_from?: string | null
+          likes_count?: number
         }
         Relationships: []
+      }
+      project_likes: {
+        Row: {
+          project_id: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          project_id: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          project_id?: string
+          user_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_likes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_shares: {
         Row: {

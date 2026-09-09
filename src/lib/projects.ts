@@ -69,6 +69,73 @@ export async function reopenDraft(id: string): Promise<Project> {
   return updateProject(id, { status: "draft", completed_at: null });
 }
 
+// ── Community ────────────────────────────────────────────────────────────────
+
+/** Make one of your projects public (server stamps your name/email + published_at). */
+export async function publishToCommunity(id: string): Promise<Project> {
+  return updateProject(id, { is_public: true });
+}
+
+/** Take a project back out of the community. */
+export async function unpublishFromCommunity(id: string): Promise<Project> {
+  return updateProject(id, { is_public: false });
+}
+
+/** Every published project — most-liked first, then newest. RLS lets anyone read these. */
+export async function listCommunity(): Promise<Project[]> {
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("is_public", true)
+    .order("likes_count", { ascending: false })
+    .order("published_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+/** The set of project ids the current user has liked (for the filled-heart state). */
+export async function listMyLikes(): Promise<Set<string>> {
+  const { data, error } = await supabase.from("project_likes").select("project_id");
+  if (error) throw error;
+  return new Set((data ?? []).map((r) => r.project_id));
+}
+
+export async function likeProject(id: string): Promise<void> {
+  const user_id = await currentUserId();
+  const { error } = await supabase.from("project_likes").insert({ project_id: id, user_id });
+  // 23505 = already liked (unique violation) → treat as success (idempotent).
+  if (error && (error as { code?: string }).code !== "23505") throw error;
+}
+
+export async function unlikeProject(id: string): Promise<void> {
+  const user_id = await currentUserId();
+  const { error } = await supabase
+    .from("project_likes")
+    .delete()
+    .eq("project_id", id)
+    .eq("user_id", user_id);
+  if (error) throw error;
+}
+
+/**
+ * Fork a community project into the current user's dashboard as a fresh, private
+ * draft. The original stays untouched in the community — this is the editable copy.
+ */
+export async function forkProject(source: Project): Promise<Project> {
+  const user_id = await currentUserId();
+  const row: TablesInsert<"projects"> = {
+    user_id,
+    title: `${source.title || "Robot"} (remix)`.slice(0, 200),
+    description: source.description ?? "",
+    content: source.content,
+    status: "draft",
+    forked_from: source.id,
+  };
+  const { data, error } = await supabase.from("projects").insert(row).select("*").single();
+  if (error) throw error;
+  return data;
+}
+
 // ── Sharing ──────────────────────────────────────────────────────────────────
 
 function randomToken(bytes = 18): string {
