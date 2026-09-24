@@ -3,37 +3,37 @@ import { useReveal } from "@/hooks/use-reveal";
 const STATEMENTS = [
   {
     n: "01",
-    emoji: "🦿",
-    heading: "A four-legged robot that walks.",
-    body: "Build the frame. Attach motors at the joints. Code the gait pattern. Watch it figure out balance with real physics.",
+    image: "/robots/spider.png",
+    heading: "A six-legged spider that walks.",
+    body: "A servo on every joint, an OLED and an ultrasonic sensor riding on top. Code the gait and watch all six legs find their rhythm with real physics.",
     tint: "var(--sky)",
   },
   {
     n: "02",
-    emoji: "🏎️",
-    heading: "A car that follows a line.",
-    body: "Wire IR sensors to the bottom. Read the values. Tell it to turn when it sees black. The classic project, no hardware needed.",
+    image: "/robots/car.png",
+    heading: "A car that drives on wheels.",
+    body: "Two motors, a chassis, a pair of wheels. Give it eyes and a face, then send it rolling across the floor with a few lines of code.",
     tint: "#FFD34E",
   },
   {
     n: "03",
-    emoji: "🦾",
-    heading: "A robotic arm that picks things up.",
-    body: "Stack rotational joints. Add a gripper. Move it with code. Drop the object on purpose. Or by accident.",
+    image: "/robots/gripper.png",
+    heading: "A crawler that grabs with claws.",
+    body: "Pointed legs to stand, pincer claws to grab, a curled tail to reach. Stack the joints, add the grippers, and pick things up.",
     tint: "var(--accent)",
   },
   {
     n: "04",
-    emoji: "🧱",
-    heading: "A robot that avoids walls.",
-    body: "Ultrasonic sensor on the front. Read the distance. Turn before you hit something. The first algorithm that feels like AI.",
+    image: "/robots/highfive.png",
+    heading: "A robot that waves hello.",
+    body: "A servo arm that lifts and an OLED that talks back. Tell it to raise a hand and flash “High five!” — your first robot with personality.",
     tint: "#7BD389",
   },
   {
     n: "05",
-    emoji: "✨",
-    heading: "Whatever you imagine next.",
-    body: "A six-wheeled rover. A flying drone frame. A walking spider. A robot dog. The tool doesn't care what you build. Neither do we.",
+    image: "/robots/duck.png",
+    heading: "A duck that walks on two legs.",
+    body: "Two legs, four servos and a wobbly sense of balance. Or a six-wheeled rover, a robot dog, a flying frame — the tool doesn't care what you build. Neither do we.",
     tint: "var(--sky)",
   },
 ];
@@ -71,14 +71,14 @@ export function RobotGallery() {
 
 function Statement({
   n,
-  emoji,
+  image,
   heading,
   body,
   tint,
   wide,
 }: {
   n: string;
-  emoji: string;
+  image: string;
   heading: string;
   body: string;
   tint: string;
@@ -89,30 +89,39 @@ function Statement({
     <div
       ref={ref}
       className={[
-        "reveal comic-outline bg-white p-8 flex flex-col transition-transform duration-200 ease-out-soft hover:-translate-y-1",
+        "reveal comic-outline bg-white overflow-hidden flex flex-col transition-transform duration-200 ease-out-soft hover:-translate-y-1",
         wide ? "sm:col-span-2" : "",
       ].join(" ")}
     >
-      <div className="flex items-center gap-3">
+      {/* Robot render banner */}
+      <div className="relative border-b-[3px] border-ink" style={{ background: tint }}>
+        <img
+          src={image}
+          alt={heading}
+          loading="lazy"
+          className={[
+            "w-full object-contain p-4",
+            wide ? "h-[300px] sm:h-[340px]" : "h-[240px]",
+          ].join(" ")}
+        />
         <span
-          className="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-ink text-[22px]"
-          style={{ background: tint }}
+          className="absolute top-3 left-3 rounded-full border-[3px] border-ink bg-white px-3 py-1 font-display text-[13px] font-bold text-ink"
         >
-          {emoji}
-        </span>
-        <span className="font-display text-[15px] font-bold text-text-tertiary">
           {n} / 05
         </span>
       </div>
-      <h3
-        className="mt-5 font-display text-foreground font-extrabold tracking-tight"
-        style={{ fontSize: "clamp(24px, 3vw, 34px)", lineHeight: 1.08 }}
-      >
-        {heading}
-      </h3>
-      <p className="mt-3 text-[16px] text-text-secondary leading-relaxed font-medium max-w-[640px]">
-        {body}
-      </p>
+      {/* Copy */}
+      <div className="p-8 flex flex-col">
+        <h3
+          className="font-display text-foreground font-extrabold tracking-tight"
+          style={{ fontSize: "clamp(24px, 3vw, 34px)", lineHeight: 1.08 }}
+        >
+          {heading}
+        </h3>
+        <p className="mt-3 text-[16px] text-text-secondary leading-relaxed font-medium max-w-[640px]">
+          {body}
+        </p>
+      </div>
     </div>
   );
 }
