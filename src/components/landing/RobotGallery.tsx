@@ -18,8 +18,8 @@ const STATEMENTS = [
   {
     n: "03",
     image: "/robots/gripper.png",
-    heading: "A crawler that grabs with claws.",
-    body: "Pointed legs to stand, pincer claws to grab, a curled tail to reach. Stack the joints, add the grippers, and pick things up.",
+    heading: "A scorpion that grabs with claws.",
+    body: "Pointed legs to stand, pincer claws to grab, a curled tail arched overhead. Stack the joints, add the grippers, and pick things up.",
     tint: "var(--accent)",
   },
   {
