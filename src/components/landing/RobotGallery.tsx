@@ -74,7 +74,6 @@ function Statement({
   image,
   heading,
   body,
-  tint,
   wide,
 }: {
   n: string;
@@ -94,13 +93,13 @@ function Statement({
       ].join(" ")}
     >
       {/* Robot render banner */}
-      <div className="relative border-b-[3px] border-ink" style={{ background: tint }}>
+      <div className="relative border-b-[3px] border-ink bg-white">
         <img
           src={image}
           alt={heading}
           loading="lazy"
           className={[
-            "w-full object-contain p-4",
+            "w-full object-cover",
             wide ? "h-[300px] sm:h-[340px]" : "h-[240px]",
           ].join(" ")}
         />
