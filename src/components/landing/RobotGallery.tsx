@@ -99,7 +99,7 @@ function Statement({
           alt={heading}
           loading="lazy"
           className={[
-            "w-full object-cover",
+            "w-full object-contain",
             wide ? "h-[300px] sm:h-[340px]" : "h-[240px]",
           ].join(" ")}
         />
