@@ -4,6 +4,13 @@ import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase
 export type Project = Tables<"projects">;
 export type ProjectStatus = "draft" | "completed";
 
+// Columns needed to render dashboard/community cards — deliberately EXCLUDES the
+// heavy `content` (the full robot snapshot). Fetching content for every row was a
+// major DB/bandwidth cost; the editor loads content on its own, and Download
+// fetches it on demand. Keeps list queries cheap even with big projects.
+const LIST_COLS =
+  "id,user_id,title,description,status,thumbnail,created_at,updated_at,completed_at,is_public,published_at,author_name,author_email,likes_count,forked_from";
+
 /** A fresh, valid (empty) editor snapshot so a brand-new project opens cleanly. */
 export const EMPTY_CONTENT = { version: "1.1", objects: [] };
 
@@ -17,10 +24,10 @@ async function currentUserId(): Promise<string> {
 export async function listProjects(): Promise<Project[]> {
   const { data, error } = await supabase
     .from("projects")
-    .select("*")
+    .select(LIST_COLS)
     .order("updated_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as Project[];
 }
 
 export async function getProject(id: string): Promise<Project | null> {
@@ -85,12 +92,12 @@ export async function unpublishFromCommunity(id: string): Promise<Project> {
 export async function listCommunity(): Promise<Project[]> {
   const { data, error } = await supabase
     .from("projects")
-    .select("*")
+    .select(LIST_COLS)
     .eq("is_public", true)
     .order("likes_count", { ascending: false })
     .order("published_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as Project[];
 }
 
 /** The set of project ids the current user has liked (for the filled-heart state). */

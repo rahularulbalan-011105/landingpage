@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Search, Sparkles, Loader2, Globe2, FolderOpen } from "lucide-react";
@@ -14,23 +14,26 @@ import { Input } from "@/components/ui/input";
 import {
   listProjects,
   listCommunity,
+  getProject,
   createProject,
   deleteProject,
   markComplete,
   reopenDraft,
   publishToCommunity,
   unpublishFromCommunity,
-  forkProject,
   listMyLikes,
   likeProject,
   unlikeProject,
   type Project,
 } from "@/lib/projects";
 import { downloadProjectJSON } from "@/lib/download";
-import { EDITOR_ORIGIN, openWorkspace } from "@/lib/workspace";
+import { openWorkspace } from "@/lib/workspace";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard | Constructa" }] }),
+  validateSearch: (search: Record<string, unknown>): { highlight?: string } => ({
+    highlight: typeof search.highlight === "string" ? search.highlight : undefined,
+  }),
   component: () => (
     <RequireAuth>
       <Dashboard />
@@ -44,8 +47,12 @@ function Dashboard() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { user } = useAuth();
+  const { highlight } = Route.useSearch();
 
-  const [mode, setMode] = useState<"mine" | "community">("mine");
+  // A shared community link (?highlight=<id>) opens straight on the Community tab
+  // with that build flashed, so voters know exactly which one they came for.
+  const [mode, setMode] = useState<"mine" | "community">(highlight ? "community" : "mine");
+  const [highlightId, setHighlightId] = useState<string | null>(highlight ?? null);
 
   const { data: projects, isLoading, isError, refetch } = useQuery({
     queryKey: ["projects"],
@@ -121,18 +128,6 @@ function Dashboard() {
     onSettled: () => setBusyId(null),
   });
 
-  const forkMut = useMutation({
-    mutationFn: (p: Project) => forkProject(p),
-    onMutate: (p) => setBusyId(p.id),
-    onSuccess: (fork) => {
-      qc.invalidateQueries({ queryKey: ["projects"] });
-      toast.success("Remixed into your dashboard ✨");
-      navigate({ to: "/project/$id", params: { id: fork.id } });
-    },
-    onError: () => toast.error("Couldn't remix this project."),
-    onSettled: () => setBusyId(null),
-  });
-
   const likeMut = useMutation({
     mutationFn: ({ id, liked }: { id: string; liked: boolean }) =>
       liked ? unlikeProject(id) : likeProject(id),
@@ -160,14 +155,24 @@ function Dashboard() {
       if (ctx?.prevComm !== undefined) qc.setQueryData(["community"], ctx.prevComm);
       toast.error("Couldn't update your like.");
     },
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ["myLikes"] });
-      qc.invalidateQueries({ queryKey: ["community"] });
-    },
+    // No refetch on success — the optimistic update already reflects it. Avoids a
+    // full community re-query on every single like (which pounded the DB).
   });
 
+  // Scroll to + flash the shared build once the community list has loaded.
+  useEffect(() => {
+    if (!highlightId || mode !== "community" || !community?.length) return;
+    const el = document.getElementById(`community-card-${highlightId}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    const t = setTimeout(() => setHighlightId(null), 4000); // fade the flash after 4s
+    return () => clearTimeout(t);
+  }, [highlightId, community, mode]);
+
   const copyCommunityLink = (p: Project) => {
-    const url = `${EDITOR_ORIGIN}/?app=1&project=${p.id}&ro=1`;
+    // Link into the Community tab with this build highlighted (so voters land on
+    // the right one). Goes to the dashboard, which requires login.
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const url = `${origin}/dashboard?highlight=${p.id}`;
     navigator.clipboard.writeText(url).then(
       () => toast.success("Link copied ✓ — share it with anyone"),
       () => toast.error("Couldn't copy the link."),
@@ -275,9 +280,16 @@ function Dashboard() {
                     busy={busyId === p.id}
                     onOpen={() => navigate({ to: "/project/$id", params: { id: p.id } })}
                     onShare={() => setShareTarget(p)}
-                    onDownload={() => {
-                      downloadProjectJSON(p);
-                      toast.success("Download started.");
+                    onDownload={async () => {
+                      try {
+                        const full = await getProject(p.id); // fetch content on demand
+                        if (full) {
+                          downloadProjectJSON(full);
+                          toast.success("Download started.");
+                        }
+                      } catch {
+                        toast.error("Couldn't prepare the download.");
+                      }
                     }}
                     onDelete={() => setDeleteTarget(p)}
                     onToggleComplete={() => completeMut.mutate(p)}
@@ -324,9 +336,9 @@ function Dashboard() {
                     key={p.id}
                     project={p}
                     isOwn={p.user_id === user?.id}
+                    highlighted={p.id === highlightId}
                     busy={busyId === p.id}
                     onView={() => openWorkspace(p.id, { readOnly: true })}
-                    onRemix={() => forkMut.mutate(p)}
                     onShare={() => copyCommunityLink(p)}
                     onEdit={() => navigate({ to: "/project/$id", params: { id: p.id } })}
                     onUnpublish={() => publishMut.mutate(p)}

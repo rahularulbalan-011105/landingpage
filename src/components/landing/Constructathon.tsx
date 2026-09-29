@@ -4,7 +4,6 @@ import { useReveal } from "@/hooks/use-reveal";
 // Sept 12, 2026 · 9:00 AM IST — one fixed instant, so the countdown is correct
 // in every timezone.
 const TARGET = new Date("2026-09-12T09:00:00+05:30").getTime();
-const REGISTER_FORM = "https://forms.gle/Vprtbj86onLGRuHw6";
 
 type Remaining = { days: number; hours: number; mins: number; secs: number; over: boolean };
 
@@ -139,18 +138,15 @@ export function Constructathon() {
             </p>
           </div>
 
-          {/* CTA */}
-          <a
-            href={REGISTER_FORM}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="comic-btn mt-9 inline-flex items-center justify-center gap-2 bg-primary text-white text-[17px] sm:text-[19px] font-extrabold px-8 py-4"
-          >
-            Register for the Constructathon
-            <span aria-hidden>→</span>
-          </a>
+          {/* Live now */}
+          <div className="comic-outline-sm mt-9 inline-flex items-center gap-2.5 bg-primary px-7 py-4 text-white">
+            <span className="inline-block h-3 w-3 shrink-0 rounded-full bg-white animate-pulse" aria-hidden />
+            <span className="font-display text-lg sm:text-xl font-extrabold">
+              The Constructathon is LIVE now! 🚀
+            </span>
+          </div>
           <span className="mt-3 text-xs text-text-tertiary font-semibold">
-            Opens the registration form · free to enter
+            The build has begun — jump in and start creating.
           </span>
 
           {/* social proof */}

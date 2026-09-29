@@ -27,9 +27,16 @@ function LoginPage() {
 
   const dest = redirect && redirect.startsWith("/") ? redirect : "/dashboard";
 
+  // A dest with a query (e.g. /dashboard?highlight=…) can't go through the typed
+  // router navigate, so fall back to a plain navigation for those.
+  const go = (d: string) => {
+    if (d.includes("?")) window.location.href = d;
+    else navigate({ to: d, replace: true });
+  };
+
   useEffect(() => {
-    if (!loading && user) navigate({ to: dest, replace: true });
-  }, [loading, user, navigate, dest]);
+    if (!loading && user) go(dest);
+  }, [loading, user, dest]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,7 +48,7 @@ function LoginPage() {
     const { error } = await signIn(email, password);
     setSubmitting(false);
     if (error) return setError(error);
-    navigate({ to: dest, replace: true });
+    go(dest);
   }
 
   return (

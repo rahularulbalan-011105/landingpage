@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from "date-fns";
-import { Eye, GitFork, Share2, Loader2, Cpu, Pencil, Undo2, Heart } from "lucide-react";
+import { Eye, Share2, Loader2, Pencil, Undo2, Heart } from "lucide-react";
 import type { Project } from "@/lib/projects";
 import { Badge } from "@/components/ui/badge";
 
@@ -10,11 +10,6 @@ function safeDistance(iso: string | null): string {
   } catch {
     return "recently";
   }
-}
-
-function parts(p: Project): number {
-  const c = p.content as { objects?: unknown[] } | null;
-  return Array.isArray(c?.objects) ? c!.objects!.length : 0;
 }
 
 function IconBtn({
@@ -42,8 +37,8 @@ export function CommunityCard({
   project,
   isOwn,
   busy,
+  highlighted,
   onView,
-  onRemix,
   onShare,
   onEdit,
   onUnpublish,
@@ -53,8 +48,8 @@ export function CommunityCard({
   project: Project;
   isOwn: boolean;
   busy?: boolean;
+  highlighted?: boolean;
   onView: () => void;
-  onRemix: () => void;
   onShare: () => void;
   onEdit?: () => void;
   onUnpublish?: () => void;
@@ -65,7 +60,20 @@ export function CommunityCard({
   const initials = author.slice(0, 2).toUpperCase();
 
   return (
-    <div className="comic-outline group relative flex flex-col bg-background p-5 transition-transform duration-150 hover:-translate-y-1">
+    <div
+      id={`community-card-${project.id}`}
+      className={[
+        "comic-outline group relative flex flex-col scroll-mt-24 bg-background p-5 transition-all duration-150 hover:-translate-y-1",
+        highlighted
+          ? "ring-4 ring-sky ring-offset-2 ring-offset-background animate-pulse"
+          : "",
+      ].join(" ")}
+    >
+      {highlighted && (
+        <span className="comic-outline-sm absolute -top-3 left-4 z-20 bg-sky px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-white">
+          👉 Vote for this
+        </span>
+      )}
       {busy && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-background/60">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -113,11 +121,8 @@ export function CommunityCard({
         </div>
       </div>
 
-      <div className="mt-2 flex items-center gap-3 text-xs text-text-tertiary">
-        <span className="inline-flex items-center gap-1">
-          <Cpu className="h-3.5 w-3.5" /> {parts(project)} parts
-        </span>
-        <span>· published {safeDistance(project.published_at)}</span>
+      <div className="mt-2 text-xs text-text-tertiary">
+        published {safeDistance(project.published_at)}
       </div>
 
       {/* actions */}
@@ -140,14 +145,11 @@ export function CommunityCard({
         ) : (
           <>
             <button
-              onClick={onRemix}
+              onClick={onView}
               className="comic-btn inline-flex flex-1 items-center justify-center gap-1.5 bg-primary px-3 py-2 text-sm font-bold text-white"
             >
-              <GitFork className="h-4 w-4" /> Remix
+              <Eye className="h-4 w-4" /> View
             </button>
-            <IconBtn label="View (read-only)" onClick={onView}>
-              <Eye className="h-4 w-4" />
-            </IconBtn>
             <IconBtn label="Copy share link" onClick={onShare}>
               <Share2 className="h-4 w-4" />
             </IconBtn>

@@ -14,7 +14,10 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!loading && !user) {
-      const redirect = typeof window !== "undefined" ? window.location.pathname : "/dashboard";
+      const redirect =
+        typeof window !== "undefined"
+          ? window.location.pathname + window.location.search // keep ?highlight=… etc.
+          : "/dashboard";
       navigate({ to: "/login", search: { redirect }, replace: true });
     }
   }, [loading, user, navigate]);
