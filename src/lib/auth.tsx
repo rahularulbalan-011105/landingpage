@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { ctrack, setTrackedEmail, signupAttribution } from "@/lib/landing-tracker";
 
 type AuthResult = { error: string | null };
 type SignUpResult = AuthResult & { needsConfirmation?: boolean };
@@ -48,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!active) return;
       setSession(s);
       setUser(s?.user ?? null);
+      setTrackedEmail(s?.user?.email);
     });
 
     supabase.auth
@@ -56,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!active) return;
         setSession(data.session);
         setUser(data.session?.user ?? null);
+        setTrackedEmail(data.session?.user?.email);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -78,12 +81,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             email,
             password,
             options: {
-              data: { full_name: name.trim() },
+              data: { full_name: name.trim(), ...signupAttribution() },
               emailRedirectTo:
                 typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined,
             },
           });
           if (error) return { error: friendlyAuthError(error.message) };
+          // An existing email comes back "successful" with no identities (Supabase hides
+          // account enumeration) — only count genuinely new accounts as sign-ups.
+          const isNew = !data.user || (data.user.identities?.length ?? 1) > 0;
+          if (isNew) ctrack("signup", email, { confirmed: !!data.session });
           // If email confirmation is ON, Supabase returns a user but no session.
           return { error: null, needsConfirmation: !data.session };
         } catch (e: any) {
@@ -93,6 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async signIn(email, password) {
         try {
           const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (!error) ctrack("login", email);
           return { error: error ? friendlyAuthError(error.message) : null };
         } catch (e: any) {
           return { error: friendlyAuthError(e?.message ?? "") };

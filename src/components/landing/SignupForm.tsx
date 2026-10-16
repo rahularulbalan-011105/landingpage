@@ -76,6 +76,7 @@ function WhatsAppLink() {
   return (
     <a
       href={WHATSAPP}
+      onClick={() => ctrack("whatsapp_click")}
       target="_blank"
       rel="noopener noreferrer"
       className="mt-3 inline-flex items-center gap-2 text-[14px] font-bold text-[#128C7E] hover:underline"
@@ -95,6 +96,7 @@ function LaunchButton({ centered }: { centered?: boolean }) {
     <div className={`flex flex-col w-full max-w-[560px] ${centered ? "items-center" : "items-start"}`}>
       <Link
         to="/signup"
+        onClick={() => ctrack("cta_click", undefined, { where: "hero" })}
         className="comic-btn group relative inline-flex items-center justify-center gap-2.5 bg-[#FFD34E] text-ink text-[17px] font-extrabold h-14 px-7 overflow-hidden"
       >
         <span
@@ -140,7 +142,6 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setErrorMsg(null);
-    ctrack("early_access_click"); // user attempted the beta signup
 
     const parsed = betaSignupSchema.safeParse({
       email,
@@ -155,7 +156,7 @@ export function SignupForm({ variant = "hero", expandable = true }: Props) {
     setStatus("loading");
     try {
       await submitBetaSignup(parsed.data);
-      ctrack("email_submitted", parsed.data.email); // successful signup
+      ctrack("updates_signup", parsed.data.email); // joined the updates list
       setStatus("success");
     } catch (err) {
       console.error(err);

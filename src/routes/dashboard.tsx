@@ -2,9 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Search, Sparkles, Loader2, Globe2, FolderOpen } from "lucide-react";
+import { Search, Sparkles, Loader2 } from "lucide-react";
 import { RequireAuth } from "@/components/auth/RequireAuth";
-import { useAuth } from "@/lib/auth";
+import { useAuth, displayName } from "@/lib/auth";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { CommunityCard } from "@/components/dashboard/CommunityCard";
@@ -24,8 +24,12 @@ import {
   listMyLikes,
   likeProject,
   unlikeProject,
+  forkProject,
   type Project,
 } from "@/lib/projects";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { DashboardHome } from "@/components/dashboard/DashboardHome";
+import { BoltGuide } from "@/components/guide/BoltGuide";
 import { downloadProjectJSON } from "@/lib/download";
 import { openWorkspace } from "@/lib/workspace";
 
@@ -51,7 +55,9 @@ function Dashboard() {
 
   // A shared community link (?highlight=<id>) opens straight on the Community tab
   // with that build flashed, so voters know exactly which one they came for.
-  const [mode, setMode] = useState<"mine" | "community">(highlight ? "community" : "mine");
+  // Nothing is selected by default: the dashboard opens on the welcome view
+  // (Bolt + what Constructa does). A shared community link opens Community.
+  const [mode, setMode] = useState<"home" | "mine" | "community">(highlight ? "community" : "home");
   const [highlightId, setHighlightId] = useState<string | null>(highlight ?? null);
 
   const { data: projects, isLoading, isError, refetch } = useQuery({
@@ -125,6 +131,27 @@ function Dashboard() {
       );
     },
     onError: () => toast.error("Couldn't update community sharing."),
+    onSettled: () => setBusyId(null),
+  });
+
+  // Reuse = copy a community build into MY dashboard as a private draft. The list
+  // query omits `content`, so fetch the full project first; forkProject inserts a
+  // brand-new row owned by me and never writes to the original.
+  const reuseMut = useMutation({
+    mutationFn: async (p: Project) => {
+      const full = await getProject(p.id);
+      if (!full) throw new Error("not found");
+      return forkProject(full);
+    },
+    onMutate: (p) => setBusyId(p.id),
+    onSuccess: (copy) => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      setMode("mine");
+      setFilter("draft");
+      setSearch("");
+      toast.success(`“${copy.title}” is now in My Robots → Drafts. Edit it freely — the original stays as it is.`);
+    },
+    onError: () => toast.error("Couldn't copy that robot. Please try again."),
     onSettled: () => setBusyId(null),
   });
 
@@ -218,39 +245,38 @@ function Dashboard() {
     <div className="min-h-screen bg-background">
       <DashboardHeader onNewProject={() => createMut.mutate()} creating={createMut.isPending} />
 
-      <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-8">
-        {/* Mode switch: My Robots / Community */}
-        <div className="mb-6 flex items-center gap-2">
-          <ModeTab
-            active={mode === "mine"}
-            label="My Robots"
-            icon={<FolderOpen className="h-4 w-4" />}
-            onClick={() => { setMode("mine"); setSearch(""); }}
-          />
-          <ModeTab
-            active={mode === "community"}
-            label="Community"
-            icon={<Globe2 className="h-4 w-4" />}
-            onClick={() => { setMode("community"); setSearch(""); }}
-          />
-        </div>
+      <main className="mx-auto grid max-w-[1280px] grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-[250px_minmax(0,1fr)]">
+        <DashboardSidebar
+          mode={mode}
+          filter={filter}
+          counts={counts}
+          onSelectMine={(f) => {
+            if (mode !== "mine") setSearch("");
+            setMode("mine");
+            setFilter(f);
+          }}
+          onSelectCommunity={() => { setMode("community"); setSearch(""); }}
+        />
 
-        {mode === "mine" ? (
+        <section className="min-w-0">
+        {mode === "home" ? (
+          <DashboardHome
+            name={displayName(user).split(" ")[0]}
+            counts={counts}
+            latest={mine[0] ?? null}
+            creating={createMut.isPending}
+            onNewProject={() => createMut.mutate()}
+            onOpenLatest={() => mine[0] && navigate({ to: "/project/$id", params: { id: mine[0].id } })}
+            onCommunity={() => { setMode("community"); setSearch(""); }}
+          />
+        ) : mode === "mine" ? (
           <>
             {/* Controls */}
             {hasAny && (
               <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex flex-wrap items-center gap-2">
-                  {(["all", "draft", "completed"] as Filter[]).map((f) => (
-                    <FilterPill
-                      key={f}
-                      active={filter === f}
-                      label={f === "all" ? "All" : f === "draft" ? "Drafts" : "Completed"}
-                      count={counts[f]}
-                      onClick={() => setFilter(f)}
-                    />
-                  ))}
-                </div>
+                <h2 className="font-display text-2xl font-extrabold text-foreground">
+                  {filter === "all" ? "My Robots" : filter === "draft" ? "Drafts" : "Completed"}
+                </h2>
                 <div className="relative w-full sm:w-72">
                   <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
                   <Input
@@ -307,7 +333,7 @@ function Dashboard() {
                   Community builds 🌍
                 </h2>
                 <p className="text-sm text-text-secondary">
-                  Open anyone's robot, remix a copy into your dashboard, or grab a share link.
+                  View anyone's robot, or <span className="font-bold">Reuse</span> it to get your own editable copy in My Robots — the original post never changes.
                 </p>
               </div>
               <div className="relative w-full sm:w-72">
@@ -342,6 +368,8 @@ function Dashboard() {
                     onShare={() => copyCommunityLink(p)}
                     onEdit={() => navigate({ to: "/project/$id", params: { id: p.id } })}
                     onUnpublish={() => publishMut.mutate(p)}
+                    onReuse={() => reuseMut.mutate(p)}
+                    reusing={reuseMut.isPending && busyId === p.id}
                     liked={myLikes?.has(p.id) ?? false}
                     onToggleLike={() => likeMut.mutate({ id: p.id, liked: myLikes?.has(p.id) ?? false })}
                   />
@@ -350,7 +378,10 @@ function Dashboard() {
             )}
           </>
         )}
+        </section>
       </main>
+
+      <BoltGuide context={mode} />
 
       <ShareDialog
         project={shareTarget}
@@ -370,33 +401,6 @@ function Dashboard() {
   );
 }
 
-function ModeTab({
-  active,
-  label,
-  icon,
-  onClick,
-}: {
-  active: boolean;
-  label: string;
-  icon: React.ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={[
-        "inline-flex items-center gap-2 rounded-full border-[2.5px] border-ink px-5 py-2 text-sm font-extrabold transition-all",
-        active
-          ? "bg-primary text-white shadow-[3px_3px_0_var(--ink)]"
-          : "bg-background text-foreground hover:bg-surface-2",
-      ].join(" ")}
-    >
-      {icon}
-      {label}
-    </button>
-  );
-}
-
 function CommunityEmpty() {
   return (
     <div className="comic-outline mx-auto mt-6 flex max-w-xl flex-col items-center bg-background halftone px-8 py-16 text-center">
@@ -408,33 +412,6 @@ function CommunityEmpty() {
         Be the first! Open one of your robots and hit the 🌐 <span className="font-bold">Publish to Community</span> button to share it with everyone.
       </p>
     </div>
-  );
-}
-
-function FilterPill({
-  active,
-  label,
-  count,
-  onClick,
-}: {
-  active: boolean;
-  label: string;
-  count: number;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={[
-        "inline-flex items-center gap-2 rounded-full border-[2.5px] border-ink px-4 py-1.5 text-sm font-bold transition-all",
-        active
-          ? "bg-primary text-white shadow-[3px_3px_0_var(--ink)]"
-          : "bg-background text-foreground hover:bg-surface-2",
-      ].join(" ")}
-    >
-      {label}
-      <span className={active ? "text-white/80" : "text-text-tertiary"}>{count}</span>
-    </button>
   );
 }
 

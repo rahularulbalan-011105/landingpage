@@ -221,6 +221,19 @@
   animation: bob 3s ease-in-out infinite;
 }
 
+/* Bolt guide: pulsing spotlight on the button he explains + speech-bubble pop */
+@keyframes cx-bolt-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@keyframes cx-bolt-pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="cx-bolt-pulse"] { animation: none !important; }
+}
+
 @keyframes scroll-line {
   0% { transform: translateY(0); opacity: 1; }
   60% { transform: translateY(8px); opacity: 0.3; }

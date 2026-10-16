@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from "date-fns";
-import { Eye, Share2, Loader2, Pencil, Undo2, Heart } from "lucide-react";
+import { Eye, Share2, Loader2, Pencil, Undo2, Heart, CopyPlus } from "lucide-react";
 import type { Project } from "@/lib/projects";
 import { Badge } from "@/components/ui/badge";
 
@@ -15,15 +15,18 @@ function safeDistance(iso: string | null): string {
 function IconBtn({
   label,
   onClick,
+  guide,
   children,
 }: {
   label: string;
+  guide?: string;
   onClick?: () => void;
   children: React.ReactNode;
 }) {
   return (
     <button
       onClick={onClick}
+      data-guide={guide}
       title={label}
       aria-label={label}
       className="inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-ink bg-background text-foreground transition-colors hover:bg-surface-2"
@@ -42,6 +45,8 @@ export function CommunityCard({
   onShare,
   onEdit,
   onUnpublish,
+  onReuse,
+  reusing,
   liked,
   onToggleLike,
 }: {
@@ -53,6 +58,9 @@ export function CommunityCard({
   onShare: () => void;
   onEdit?: () => void;
   onUnpublish?: () => void;
+  /** Copy this build into the viewer's own dashboard (the original is never touched). */
+  onReuse?: () => void;
+  reusing?: boolean;
   liked: boolean;
   onToggleLike: () => void;
 }) {
@@ -88,6 +96,7 @@ export function CommunityCard({
         <div className="flex shrink-0 flex-col items-end gap-1.5">
           <button
             onClick={onToggleLike}
+            data-guide="c-like"
             aria-pressed={liked}
             title={liked ? "Remove your like" : "Like this build"}
             className={[
@@ -131,11 +140,12 @@ export function CommunityCard({
           <>
             <button
               onClick={onEdit}
+              data-guide="c-edit"
               className="comic-btn inline-flex flex-1 items-center justify-center gap-1.5 bg-primary px-3 py-2 text-sm font-bold text-white"
             >
               <Pencil className="h-4 w-4" /> Edit
             </button>
-            <IconBtn label="Copy share link" onClick={onShare}>
+            <IconBtn label="Copy share link" guide="c-share" onClick={onShare}>
               <Share2 className="h-4 w-4" />
             </IconBtn>
             <IconBtn label="Unpublish (move back to My Robots)" onClick={onUnpublish}>
@@ -146,11 +156,21 @@ export function CommunityCard({
           <>
             <button
               onClick={onView}
+              data-guide="c-view"
               className="comic-btn inline-flex flex-1 items-center justify-center gap-1.5 bg-primary px-3 py-2 text-sm font-bold text-white"
             >
               <Eye className="h-4 w-4" /> View
             </button>
-            <IconBtn label="Copy share link" onClick={onShare}>
+            <button
+              onClick={onReuse}
+              data-guide="c-reuse"
+              disabled={reusing}
+              title="Copy this robot into My Robots as your own draft — the original stays untouched"
+              className="comic-btn inline-flex flex-1 items-center justify-center gap-1.5 bg-[#FFD34E] px-3 py-2 text-sm font-bold text-ink disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {reusing ? <Loader2 className="h-4 w-4 animate-spin" /> : <CopyPlus className="h-4 w-4" />} Reuse
+            </button>
+            <IconBtn label="Copy share link" guide="c-share" onClick={onShare}>
               <Share2 className="h-4 w-4" />
             </IconBtn>
           </>

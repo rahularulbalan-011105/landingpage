@@ -130,11 +130,15 @@ export async function unlikeProject(id: string): Promise<void> {
  */
 export async function forkProject(source: Project): Promise<Project> {
   const user_id = await currentUserId();
+  // A NEW row owned by the current user (RLS only allows inserting your own rows);
+  // nothing is written to the source, so the community post can't be affected.
+  // Starts private (is_public defaults to false) — the reuser decides later.
   const row: TablesInsert<"projects"> = {
     user_id,
-    title: `${source.title || "Robot"} (remix)`.slice(0, 200),
+    title: `${source.title || "Robot"} (copy)`.slice(0, 200),
     description: source.description ?? "",
     content: source.content,
+    thumbnail: source.thumbnail ?? null,
     status: "draft",
     forked_from: source.id,
   };

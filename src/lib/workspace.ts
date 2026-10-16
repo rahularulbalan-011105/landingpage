@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { ctrack, editorHandoffParams } from "@/lib/landing-tracker";
 
 /** Origin of the Constructa 3D editor (the actual project workspace). */
 export const EDITOR_ORIGIN =
@@ -21,6 +22,9 @@ export async function buildWorkspaceUrl(
 
   const params = new URLSearchParams({ app: "1", project: projectId });
   if (opts?.readOnly) params.set("ro", "1");
+  // Analytics hand-off: same visitor id + stored attribution in the workshop.
+  editorHandoffParams().forEach((v, k) => params.set(k, v));
+  ctrack("open_editor", undefined, { project: projectId, ro: !!opts?.readOnly });
   let url = `${EDITOR_ORIGIN}/?${params.toString()}`;
 
   if (s?.access_token && s?.refresh_token) {

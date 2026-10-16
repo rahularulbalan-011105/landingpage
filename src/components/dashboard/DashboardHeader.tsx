@@ -29,7 +29,7 @@ export function DashboardHeader({
 
   return (
     <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex h-[76px] max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-8">
+      <div className="mx-auto flex h-[76px] max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-8">
         <div className="flex items-center gap-3">
           <img
             src={logo}
@@ -49,6 +49,7 @@ export function DashboardHeader({
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={onNewProject}
+            data-guide="new-project"
             disabled={creating}
             className="comic-btn inline-flex items-center justify-center gap-2 bg-primary px-4 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed"
           >

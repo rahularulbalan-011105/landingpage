@@ -8,6 +8,7 @@ import { FullPageLoader } from "@/components/ui/loaders";
 import { getSharedProject } from "@/lib/projects";
 import { downloadProjectJSON } from "@/lib/download";
 import { EDITOR_ORIGIN } from "@/lib/workspace";
+import { ctrack, withEditorHandoff } from "@/lib/landing-tracker";
 
 export const Route = createFileRoute("/share/$token")({
   head: () => ({ meta: [{ title: "Shared robot | Constructa" }] }),
@@ -54,6 +55,7 @@ function SharePage() {
           </Link>
           <Link
             to="/signup"
+            onClick={() => ctrack("cta_click", undefined, { where: "share" })}
             className="comic-btn inline-flex items-center justify-center bg-primary px-4 py-2 text-sm font-bold text-white"
           >
             Build your own
@@ -93,6 +95,10 @@ function SharePage() {
           <div className="mt-6 flex flex-wrap gap-3 border-t-2 border-dashed border-ink/15 pt-6">
             <a
               href={editorUrl}
+              onClick={(e) => {
+                e.currentTarget.href = withEditorHandoff(editorUrl);
+                ctrack("open_editor", undefined, { share: true });
+              }}
               className="comic-btn inline-flex items-center justify-center gap-2 bg-primary px-5 py-3 text-sm font-bold text-white"
             >
               <ExternalLink className="h-4 w-4" /> Open in 3D workshop
