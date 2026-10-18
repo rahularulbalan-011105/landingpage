@@ -1,17 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { Sparkles, Globe2, PlayCircle, ArrowRight, Loader2 } from "lucide-react";
-import buildImg from "@/assets/how-build.webp";
-import runImg from "@/assets/how-run.webp";
-import codeImg from "@/assets/how-code.png";
 import type { Project } from "@/lib/projects";
-
-const JOURNEY = [
-  { n: "1", emoji: "🔧", name: "Build", desc: "Drag shapes into a 3D workspace, snap parts together and add motors, wheels and sensors.", image: buildImg, tint: "var(--sky)" },
-  { n: "2", emoji: "🔌", name: "Wire", desc: "Connect real electronics — Arduino or SUBO boards, servos, LEDs, sensors — pin to pin.", tint: "#B794F6" },
-  { n: "3", emoji: "💻", name: "Code", desc: "Snap blocks together or write Arduino C++. Same robot, your choice of language.", image: codeImg, tint: "#FFD34E" },
-  { n: "4", emoji: "⚡", name: "Run", desc: "Hit play and watch real physics: drive, walk, push and battle. Wobbly designs fall over!", image: runImg, tint: "var(--accent)" },
-  { n: "5", emoji: "🌍", name: "Share", desc: "Publish to the Community, collect likes, and let others reuse your robot as their starting point.", tint: "#34D399" },
-];
+import { STATEMENTS } from "@/components/landing/RobotGallery";
 
 /**
  * Dashboard home — shown when nothing is selected in the sidebar. A welcome
@@ -99,27 +89,42 @@ export function DashboardHome({
         )}
       </div>
 
-      {/* What Constructa does */}
-      <div>
-        <h2 className="font-display text-2xl font-extrabold text-foreground">From idea to a robot that moves</h2>
-        <p className="mt-1 text-sm text-text-secondary">Five steps — and you can jump back to any of them whenever you like.</p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          {JOURNEY.map((s) => (
-            <div key={s.n} className="comic-outline relative flex flex-col overflow-hidden bg-background">
-              <div className="flex h-[88px] items-center justify-center border-b-[3px] border-ink" style={{ background: s.tint }}>
-                {s.image ? <img src={s.image} alt="" className="h-full w-full object-cover" loading="lazy" /> : <span className="text-[40px]" aria-hidden="true">{s.emoji}</span>}
-              </div>
-              <span className="comic-outline-sm absolute left-2.5 top-2.5 bg-background px-2 py-0.5 font-display text-xs font-extrabold text-foreground">
-                {s.n}
-              </span>
-              <div className="flex-1 p-3.5">
-                <div className="font-display text-[17px] font-extrabold text-foreground">{s.emoji} {s.name}</div>
-                <p className="mt-1 text-[13px] leading-snug text-text-secondary">{s.desc}</p>
-              </div>
-            </div>
-          ))}
+      {/* Robots you can build — the same showcase as the landing page, laid out for easy reading */}
+      <section aria-labelledby="robots-you-can-build">
+        <h2 id="robots-you-can-build" className="font-display text-[26px] font-extrabold leading-tight text-foreground">
+          Robots you can build
+        </h2>
+        <p className="mt-2 max-w-[60ch] text-[16px] leading-[1.6] text-text-secondary">
+          Every one of these was built in Constructa. Pick one as inspiration — or build something nobody has thought of yet.
+        </p>
+        <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {STATEMENTS.map((s, i) => {
+            const wide = i === STATEMENTS.length - 1;
+            return (
+              <article
+                key={s.n}
+                className={["comic-outline flex flex-col overflow-hidden bg-white", wide ? "lg:col-span-2" : ""].join(" ")}
+              >
+                <div className="relative border-b-[3px] border-ink bg-white">
+                  <img
+                    src={s.image}
+                    alt={s.heading}
+                    loading="lazy"
+                    className={["w-full object-contain p-2", wide ? "h-[240px]" : "h-[210px]"].join(" ")}
+                  />
+                  <span className="absolute left-3 top-3 rounded-full border-[2.5px] border-ink bg-white px-2.5 py-0.5 font-display text-[13px] font-bold text-ink">
+                    {s.n} / {String(STATEMENTS.length).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-2.5 px-6 py-5">
+                  <h3 className="font-display text-[22px] font-extrabold leading-snug text-foreground">{s.heading}</h3>
+                  <p className="max-w-[62ch] text-[16px] leading-[1.65] text-text-secondary">{s.body}</p>
+                </div>
+              </article>
+            );
+          })}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

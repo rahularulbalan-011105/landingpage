@@ -1,6 +1,7 @@
 import { useReveal } from "@/hooks/use-reveal";
 
-const STATEMENTS = [
+// Shared with the dashboard home ("Robots you can build").
+export const STATEMENTS = [
   {
     n: "01",
     image: "/robots/spider.png",
