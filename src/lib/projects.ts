@@ -8,8 +8,10 @@ export type ProjectStatus = "draft" | "completed";
 // heavy `content` (the full robot snapshot). Fetching content for every row was a
 // major DB/bandwidth cost; the editor loads content on its own, and Download
 // fetches it on demand. Keeps list queries cheap even with big projects.
+// `author_email` is deliberately NOT selected: published rows are readable by
+// anyone (community policy), so the address must never leave the server.
 const LIST_COLS =
-  "id,user_id,title,description,status,thumbnail,created_at,updated_at,completed_at,is_public,published_at,author_name,author_email,likes_count,forked_from";
+  "id,user_id,title,description,status,thumbnail,created_at,updated_at,completed_at,is_public,published_at,author_name,likes_count,forked_from";
 
 /** A fresh, valid (empty) editor snapshot so a brand-new project opens cleanly. */
 export const EMPTY_CONTENT = { version: "1.1", objects: [] };

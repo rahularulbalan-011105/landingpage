@@ -39,6 +39,10 @@ type Attribution = {
   referrer: string;
 };
 
+// Ingest token for the collector. It ships in this bundle, so it is NOT a secret:
+// it only stops drive-by posting to a public endpoint.
+const WRITE_TOKEN = "cx1_w7kQ2mBvRt";
+
 const ATTR_KEY = "cx_attr_v2";
 const VID_KEY = "cx_vid";
 const SID_KEY = "cx_sid";
@@ -137,6 +141,7 @@ export function ctrack(event: LandingEvent, email?: string, meta?: Record<string
   const rec = {
     type: "cx",
     app: "landing",
+    w: WRITE_TOKEN,
     event,
     eid: makeId("e"),
     ts: new Date().toISOString(),

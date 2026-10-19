@@ -122,11 +122,10 @@ export function CommunityCard({
         <span className="comic-outline-sm flex h-9 w-9 shrink-0 items-center justify-center bg-surface-2 font-display text-xs font-extrabold text-foreground">
           {initials}
         </span>
+        {/* Display name only — a publisher's email address is never shown or
+            fetched (community rows are world-readable). */}
         <div className="min-w-0 leading-tight">
           <div className="truncate text-sm font-bold text-foreground">{author}</div>
-          {project.author_email && (
-            <div className="truncate text-xs text-text-tertiary">{project.author_email}</div>
-          )}
         </div>
       </div>
 
