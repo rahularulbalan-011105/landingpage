@@ -60,6 +60,16 @@ const makeId = (p: string) => p + Date.now().toString(36) + Math.random().toStri
 
 let _attr: Attribution | null = null;
 
+// Coarse location straight from the browser: the IANA time zone and the UI
+// language. No IP lookup and no third-party geo service — a time zone is a
+// region, not an address. The dashboard maps it to a city/country dot.
+function visitorZone(): string {
+  try { return (Intl.DateTimeFormat().resolvedOptions().timeZone || "").slice(0, 60); } catch { return ""; }
+}
+function visitorLang(): string {
+  try { return String(navigator.language || "").slice(0, 20); } catch { return ""; }
+}
+
 function deviceType(): string {
   const ua = navigator.userAgent || "";
   if (/iPad|Tablet|PlayBook|Silk/i.test(ua)) return "tablet";
@@ -152,6 +162,8 @@ export function ctrack(event: LandingEvent, email?: string, meta?: Record<string
     page: (window.location.pathname + window.location.search).slice(0, 300),
     host: window.location.hostname,
     device: deviceType(),
+    tz: visitorZone(),
+    lang: visitorLang(),
     meta: meta && Object.keys(meta).length ? meta : undefined,
   };
   const payload = JSON.stringify(rec);
