@@ -32,3 +32,10 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# This project installs with bun (bun.lock); a second lockfile makes the
+# host's package-manager detection ambiguous.
+package-lock.json
+
+# Stray media dropped in the repo root
+WhatsApp*
