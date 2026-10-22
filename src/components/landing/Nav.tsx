@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, ChevronDown, Globe } from "lucide-react";
-import logo from "@/assets/constructa-logo.png";
+import logo from "@/assets/constructa-logo.webp";
 import { useAuth } from "@/lib/auth";
 import { LANGUAGES } from "@/lib/languages";
 import { ATUMX_URL } from "@/lib/links";

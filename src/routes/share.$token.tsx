@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Download, ExternalLink, Eye, Bot } from "lucide-react";
-import logo from "@/assets/constructa-logo.jpeg";
+import logo from "@/assets/constructa-logo-mark.webp";
 import { Badge } from "@/components/ui/badge";
 import { FullPageLoader } from "@/components/ui/loaders";
 import { getSharedProject } from "@/lib/projects";

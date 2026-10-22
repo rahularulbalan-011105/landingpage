@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { LogOut, Plus, User as UserIcon } from "lucide-react";
-import logo from "@/assets/constructa-logo.jpeg";
+import logo from "@/assets/constructa-logo-mark.webp";
 import { useAuth, displayName, initials } from "@/lib/auth";
 import {
   DropdownMenu,

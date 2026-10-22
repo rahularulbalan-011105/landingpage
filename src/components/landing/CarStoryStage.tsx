@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type * as T from "three";
+import { stageQuality } from "@/lib/stage-quality";
 
 /**
  * One robot car, start to finish, driven by scroll progress (0 → 1):
@@ -113,21 +114,22 @@ export function CarStoryStage({ progressRef, sourceRef, className }: Props) {
     let teardown = () => {};
 
     const start = async () => {
+      const quality = stageQuality();
       const THREE = await import("three");
       const { RoundedBoxGeometry: RoundedBox } = await import("three/examples/jsm/geometries/RoundedBoxGeometry.js");
       if (disposed) return;
 
       let renderer: T.WebGLRenderer;
       try {
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+        renderer = new THREE.WebGLRenderer({ antialias: quality.antialias, alpha: true, powerPreference: "high-performance" });
       } catch {
         return;
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(quality.dpr);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.NeutralToneMapping;
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.enabled = quality.shadows;
+      renderer.shadowMap.type = quality.tier === "high" ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
       const canvas = renderer.domElement;
       Object.assign(canvas.style, { display: "block", opacity: "0", transition: "opacity 600ms ease" });
       host.prepend(canvas);
@@ -150,8 +152,8 @@ export function CarStoryStage({ progressRef, sourceRef, className }: Props) {
       scene.add(new THREE.HemisphereLight(0xffffff, 0xdde6e1, 1.9));
       const sun = new THREE.DirectionalLight(0xffffff, 2.4);
       sun.position.set(14, 30, 12);
-      sun.castShadow = true;
-      sun.shadow.mapSize.set(2048, 2048);
+      sun.castShadow = quality.shadows;
+      if (quality.shadows) sun.shadow.mapSize.set(quality.shadowMapSize, quality.shadowMapSize);
       Object.assign(sun.shadow.camera, { left: -32, right: 32, top: 32, bottom: -32, far: 90 });
       sun.shadow.radius = 4;
       sun.shadow.bias = -0.0006;
@@ -537,6 +539,9 @@ export function CarStoryStage({ progressRef, sourceRef, className }: Props) {
         canvas.remove();
       };
     };
+
+    // No usable GPU path: never load three or open a second WebGL context.
+    if (!stageQuality().enabled) return;
 
     const gate = new IntersectionObserver(
       ([e]) => {

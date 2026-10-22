@@ -19,7 +19,7 @@ import {
   Trash2,
   Youtube,
 } from "lucide-react";
-import logo from "@/assets/constructa-logo.png";
+import logo from "@/assets/constructa-logo.webp";
 import { ServoBot } from "./ServoBot";
 
 /**

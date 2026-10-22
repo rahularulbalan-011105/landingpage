@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/constructa-logo.jpeg";
+import logo from "@/assets/constructa-logo-mark.webp";
 
 /** Branded, comic-theme wrapper shared by the login + signup screens. */
 export function AuthShell({

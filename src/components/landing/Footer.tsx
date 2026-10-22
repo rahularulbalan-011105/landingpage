@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronDown, Globe } from "lucide-react";
-import logo from "@/assets/constructa-logo.png";
+import logo from "@/assets/constructa-logo.webp";
 import { LANGUAGES } from "@/lib/languages";
 import { ATUMX_URL } from "@/lib/links";
 import { ctrack } from "@/lib/landing-tracker";

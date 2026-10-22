@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type * as T from "three";
+import { stageQuality } from "@/lib/stage-quality";
 
 export type StagePhase = "loading" | "assembling" | "assembled" | "floating" | "rebuilding";
 export type RobotModel = "crawler" | "arm" | "humanoid";
@@ -703,6 +704,11 @@ export function RobotStage({ className, model, rebuildKey, onPhase }: Props) {
     let raf = 0;
     let teardown = () => {};
 
+    const quality = stageQuality();
+    // No usable GPU path: skip the 3D entirely rather than ship a slideshow.
+    // The hero copy is designed to stand on its own (same as the no-WebGL case).
+    if (!quality.enabled) return;
+
     (async () => {
       const THREE = await import("three");
       const { RoundedBoxGeometry } = await import("three/examples/jsm/geometries/RoundedBoxGeometry.js");
@@ -711,15 +717,16 @@ export function RobotStage({ className, model, rebuildKey, onPhase }: Props) {
 
       let renderer: T.WebGLRenderer;
       try {
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+        renderer = new THREE.WebGLRenderer({ antialias: quality.antialias, alpha: true, powerPreference: "high-performance" });
       } catch {
         return; // no WebGL: the copy still stands on its own
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(quality.dpr);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.NeutralToneMapping;
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.enabled = quality.shadows;
+      // Soft (PCF) shadows cost noticeably more per pixel; keep them for the top tier only.
+      renderer.shadowMap.type = quality.tier === "high" ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
       const canvas = renderer.domElement;
       canvas.style.display = "block";
       canvas.style.touchAction = "pan-y";
@@ -734,8 +741,8 @@ export function RobotStage({ className, model, rebuildKey, onPhase }: Props) {
       scene.add(new THREE.HemisphereLight(0xffffff, 0xdde6e1, 1.9));
       const sun = new THREE.DirectionalLight(0xffffff, 2.4);
       sun.position.set(14, 30, 12);
-      sun.castShadow = true;
-      sun.shadow.mapSize.set(2048, 2048);
+      sun.castShadow = quality.shadows;
+      if (quality.shadows) sun.shadow.mapSize.set(quality.shadowMapSize, quality.shadowMapSize);
       Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, far: 80 });
       sun.shadow.radius = 4;
       sun.shadow.bias = -0.0006;

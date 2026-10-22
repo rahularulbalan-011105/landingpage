@@ -13,28 +13,28 @@ type Tile =
 
 // Laid out to fill a 6-column grid exactly (dense flow). Alt text and captions come from the translations.
 const WALL: Tile[] = [
-  { kind: "photo", src: "/constructathon/build-1.jpg", alt: "build1", caption: 0, span: "col-span-2 row-span-2 lg:row-span-3", pos: "50% 60%" },
-  { kind: "robot", src: "/robots/spider.png", alt: "spider", span: "col-span-2 row-span-2" },
-  { kind: "robot", src: "/constructathon/wall-humanoid.png", alt: "humanoid" },
-  { kind: "robot", src: "/constructathon/wall-quad.png", alt: "quad" },
-  { kind: "robot", src: "/constructathon/wall-battle.png", alt: "battle" },
-  { kind: "robot", src: "/constructathon/wall-duck.png", alt: "duck" },
-  { kind: "robot", src: "/constructathon/wall-car.png", alt: "car" },
-  { kind: "robot", src: "/constructathon/wall-scorpion.png", alt: "scorpion" },
-  { kind: "photo", src: "/constructathon/build-2.jpg", alt: "build2", caption: 1, span: "col-span-2 row-span-2 lg:row-span-3", pos: "50% 45%" },
-  { kind: "photo", src: "/constructathon/build-3.jpg", alt: "build3", caption: 2, span: "col-span-2 row-span-2 lg:col-span-4", pos: "45% 52%" },
+  { kind: "photo", src: "/constructathon/build-1.webp", alt: "build1", caption: 0, span: "col-span-2 row-span-2 lg:row-span-3", pos: "50% 60%" },
+  { kind: "robot", src: "/robots/spider.webp", alt: "spider", span: "col-span-2 row-span-2" },
+  { kind: "robot", src: "/constructathon/wall-humanoid.webp", alt: "humanoid" },
+  { kind: "robot", src: "/constructathon/wall-quad.webp", alt: "quad" },
+  { kind: "robot", src: "/constructathon/wall-battle.webp", alt: "battle" },
+  { kind: "robot", src: "/constructathon/wall-duck.webp", alt: "duck" },
+  { kind: "robot", src: "/constructathon/wall-car.webp", alt: "car" },
+  { kind: "robot", src: "/constructathon/wall-scorpion.webp", alt: "scorpion" },
+  { kind: "photo", src: "/constructathon/build-2.webp", alt: "build2", caption: 1, span: "col-span-2 row-span-2 lg:row-span-3", pos: "50% 45%" },
+  { kind: "photo", src: "/constructathon/build-3.webp", alt: "build3", caption: 2, span: "col-span-2 row-span-2 lg:col-span-4", pos: "45% 52%" },
 ];
 
 // Everything built in Constructa, for the running line.
 const STRIP = [
-  "/constructathon/wall-humanoid.png",
-  "/robots/spider.png",
-  "/constructathon/wall-quad.png",
-  "/robots/car.png",
-  "/constructathon/wall-battle.png",
-  "/robots/highfive.png",
-  "/robots/gripper.png",
-  "/constructathon/wall-duck.png",
+  "/constructathon/wall-humanoid.webp",
+  "/robots/spider.webp",
+  "/constructathon/wall-quad.webp",
+  "/robots/car.webp",
+  "/constructathon/wall-battle.webp",
+  "/robots/highfive.webp",
+  "/robots/gripper.webp",
+  "/constructathon/wall-duck.webp",
 ];
 
 export function ConstructathonWall() {
