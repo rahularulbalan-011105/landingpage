@@ -1,5 +1,6 @@
 import { useReveal } from "@/hooks/use-reveal";
 import awards from "@/assets/awards.jpg";
+import { SectionHead } from "./SectionHead";
 
 const BADGES = [
   "NIDHI PRAYAS",
@@ -13,51 +14,33 @@ const BADGES = [
 export function Awards() {
   const ref = useReveal<HTMLDivElement>();
   return (
-    <section className="bg-background pt-40 sm:pt-[160px]">
-      <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
-        <div ref={ref} className="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
-            <span className="comic-tag">🏆 Recognition</span>
-            <h2
-              className="mt-5 font-display text-foreground font-extrabold"
-              style={{
-                fontSize: "clamp(32px, 4.5vw, 52px)",
-                lineHeight: 1.02,
-                letterSpacing: "-0.02em",
-                maxWidth: "720px",
-              }}
-            >
-              Backed by people who{" "}
-              <span className="text-primary">build the future</span>.
-            </h2>
-          </div>
-          <p className="text-[13px] font-semibold text-text-tertiary md:text-right max-w-[280px]">
-            Awards, grants &amp; partnerships from India's innovation ecosystem
-          </p>
-        </div>
+    <section className="bg-wb-canvas pt-28 font-ui text-wb-ink sm:pt-36">
+      <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
+        <SectionHead
+          eyebrow="Recognition"
+          title="Backed by people who build the future."
+          aside="Awards, grants and partnerships from India’s innovation ecosystem."
+        />
 
-        <div
-          ref={useReveal<HTMLDivElement>()}
-          className="reveal mt-12 comic-outline overflow-hidden bg-white"
-        >
+        <div ref={ref} className="reveal wb-panel mt-12 overflow-hidden">
           <img
             src={awards}
             alt="AtumX awards and recognition: NIDHI PRAYAS, EDII-TN, TiE Chennai, Wadhwani Foundation, TIDCO, Government of Tamil Nadu"
-            className="w-full h-auto block"
+            className="block h-auto w-full"
             loading="lazy"
           />
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        <ul className="mt-6 flex flex-wrap gap-2">
           {BADGES.map((b) => (
-            <span
+            <li
               key={b}
-              className="comic-outline-sm bg-surface-1 px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-wide text-ink"
+              className="rounded-[10px] border border-wb-line bg-wb-bench px-3 py-1.5 text-[13px] font-medium text-wb-ink-2"
             >
               {b}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

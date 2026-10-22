@@ -1,12 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/landing/Nav";
 import { Hero } from "@/components/landing/Hero";
-import { Winners } from "@/components/landing/Winners";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { RobotGallery } from "@/components/landing/RobotGallery";
-import { WhyWeBuilt } from "@/components/landing/WhyWeBuilt";
 import { WhatsDifferent } from "@/components/landing/WhatsDifferent";
-import { Awards } from "@/components/landing/Awards";
+import { ConstructathonWall } from "@/components/landing/ConstructathonWall";
+import { WhatsNew } from "@/components/landing/WhatsNew";
 import { Faq } from "@/components/landing/Faq";
 import { FinalCta } from "@/components/landing/FinalCta";
 import { Footer } from "@/components/landing/Footer";
@@ -14,21 +12,21 @@ import { Footer } from "@/components/landing/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Build any robot you imagine. Watch it run. | Constructa" },
+      { title: "Constructa" },
       {
         name: "description",
         content:
-          "Free-form 3D robot building with real physics — a browser workshop for young builders. By the team behind SUBO, used in 500+ schools.",
+          "Free-form 3D robot building with real physics — a robot workshop in your browser. By the team behind SUBO, used in 500+ schools.",
       },
-      { property: "og:title", content: "Build any robot you imagine. Watch it run. | Constructa" },
+      { property: "og:title", content: "That robot in your head? Build it here. | Constructa" },
       {
         property: "og:description",
         content:
-          "Free-form 3D robot building with real physics — a browser workshop for young builders. By the team behind SUBO, used in 500+ schools.",
+          "Free-form 3D robot building with real physics — a robot workshop in your browser. By the team behind SUBO, used in 500+ schools.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
-      { name: "twitter:title", content: "Build any robot you imagine. Watch it run. | Constructa" },
+      { name: "twitter:title", content: "That robot in your head? Build it here. | Constructa" },
       {
         name: "twitter:description",
         content:
@@ -46,12 +44,10 @@ function Index() {
       <Nav />
       <main>
         <Hero />
-        <Winners />
         <HowItWorks />
-        <RobotGallery />
-        <WhyWeBuilt />
         <WhatsDifferent />
-        <Awards />
+        <ConstructathonWall />
+        <WhatsNew />
         <Faq />
         <FinalCta />
       </main>

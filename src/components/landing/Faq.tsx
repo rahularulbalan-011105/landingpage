@@ -1,87 +1,58 @@
 import { useState } from "react";
+import { Plus } from "lucide-react";
 import { useReveal } from "@/hooks/use-reveal";
-
-const QA = [
-  {
-    q: "Is it really free?",
-    a: "Yes. Free during beta. We're a hardware company — the tool is how we say thanks to the maker community.",
-  },
-  {
-    q: "Do I need to download anything?",
-    a: "Nope. It runs right in your browser — Chrome, Edge, Firefox or Safari. Just use a computer: Constructa needs a big screen to build big robots.",
-  },
-  {
-    q: "I'm on my phone — can I use it?",
-    a: "Constructa is built for a desktop-size screen, so it isn't playable on a phone yet. Drop your email and we'll send you a link to open your workshop on a computer.",
-  },
-  {
-    q: "What can I actually build?",
-    a: "Any robot you imagine. Wheels, legs, arms, sensors, motors. Free-form 3D building, not pre-built templates. If you can dream it, you can build it.",
-  },
-  {
-    q: "What coding languages does it support?",
-    a: "Three. Blockly for beginners. Python for intermediate. C++ for advanced. Same robot, three ways to code it.",
-  },
-  {
-    q: "When do I get access?",
-    a: "Constructa is free to jump into right now — just hit Launch. Drop your email too and we'll send every new feature, release and tip straight to your inbox. If you described a robot you'd build, we might build it and feature you.",
-  },
-  {
-    q: "Who is AtumX?",
-    a: "A robotics hardware startup based in Chennai, India. Making STEM kits since 2022, used in 500+ schools across four countries. SUBO is our flagship board — Constructa is our workshop in the browser.",
-  },
-];
+import { useT } from "@/i18n";
 
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   const ref = useReveal<HTMLDivElement>();
+  const f = useT().faq;
   return (
-    <section className="bg-surface-1 halftone-ink pt-40 sm:pt-[160px] pb-40 sm:pb-[160px] mt-40 sm:mt-[160px]">
-      <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
-        <div ref={ref} className="reveal">
-          <span className="comic-tag">❓ FAQ</span>
+    <section id="faq" className="mt-28 scroll-mt-20 border-y border-wb-line bg-wb-bench py-28 font-ui text-wb-ink sm:mt-36 sm:py-36">
+      <div ref={ref} className="reveal mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+        <div className="lg:sticky lg:top-28 lg:self-start">
+          <p className="font-key text-[12px] uppercase tracking-[0.14em] text-wb-ink-3">{f.eyebrow}</p>
           <h2
-            className="mt-5 font-display text-foreground font-extrabold"
-            style={{
-              fontSize: "clamp(36px, 5.5vw, 64px)",
-              lineHeight: 1.02,
-              letterSpacing: "-0.02em",
-            }}
+            className="mt-4 font-brand font-bold text-wb-ink"
+            style={{ fontSize: "clamp(32px, 4.2vw, 60px)", lineHeight: 1.05, letterSpacing: "-0.045em" }}
           >
-            Questions, <span className="text-primary">answered</span>.
+            {f.title}
           </h2>
         </div>
 
-        <div className="mt-16 max-w-[820px] flex flex-col gap-4">
-          {QA.map((item, i) => {
+        <div className="wb-panel divide-y divide-wb-line overflow-hidden">
+          {f.items.map((item, i) => {
             const isOpen = open === i;
+            const id = `faq-${i}`;
             return (
-              <div key={item.q} className="comic-outline bg-white overflow-hidden">
-                <button
-                  type="button"
-                  aria-expanded={isOpen}
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between gap-6 px-6 py-5 text-left"
-                >
-                  <span className="font-display text-[17px] sm:text-[20px] font-bold text-foreground">
-                    {item.q}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink bg-primary text-white text-[18px] leading-none transition-transform duration-300 ease-out-soft"
-                    style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
+              <div key={i}>
+                <h3>
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={id}
+                    onClick={() => setOpen(isOpen ? null : i)}
+                    className="flex w-full items-center justify-between gap-6 px-6 py-5 text-start transition-colors hover:bg-wb-bench/60"
                   >
-                    +
-                  </span>
-                </button>
+                    <span className="text-[16px] font-semibold text-wb-ink sm:text-[17px]">{item.q}</span>
+                    <span
+                      aria-hidden
+                      className={[
+                        "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-[transform,background-color,border-color,color] duration-300 ease-out-soft",
+                        isOpen ? "rotate-45 border-wb-ink bg-wb-ink text-white" : "border-wb-line bg-white text-wb-ink-2",
+                      ].join(" ")}
+                    >
+                      <Plus className="h-3.5 w-3.5" strokeWidth={2.25} />
+                    </span>
+                  </button>
+                </h3>
                 <div
+                  id={id}
                   className="grid transition-all duration-300 ease-out-soft"
                   style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
                 >
                   <div className="overflow-hidden">
-                    <p className="px-6 pb-6 text-[16px] text-text-secondary leading-[1.7] font-medium">
-                      {item.a}
-                    </p>
+                    <p className="max-w-[44em] px-6 pb-6 text-[15px] leading-[1.7] text-wb-ink-2">{item.a}</p>
                   </div>
                 </div>
               </div>

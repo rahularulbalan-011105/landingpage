@@ -41,6 +41,21 @@
   --color-ring: var(--accent);
   --color-destructive: oklch(0.62 0.22 27);
   --color-destructive-foreground: #FFFFFF;
+
+  /* Workbench system — mirrors the editor UI (constructa.atumx.in). */
+  --font-brand: "Unbounded", "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-key: "JetBrains Mono", ui-monospace, monospace;
+  --color-wb-canvas: var(--wb-canvas);
+  --color-wb-bench: var(--wb-bench);
+  --color-wb-ink: var(--wb-ink);
+  --color-wb-ink-2: var(--wb-ink-2);
+  --color-wb-ink-3: var(--wb-ink-3);
+  --color-wb-line: var(--wb-line);
+  --color-wb-grid: var(--wb-grid);
+  --color-wb-axis: var(--wb-axis);
+  --color-wb-orange: var(--wb-orange);
+  --color-wb-blue: var(--wb-blue);
 }
 
 /* Constructa — white + orange comic theme.
@@ -59,6 +74,23 @@
   --accent-glow: rgba(255, 107, 53, 0.18);
   --ink: #111111;          /* thick comic-black outline / shadow */
   --sky: #29ABE2;          /* mascot blue secondary accent */
+
+  /* "Gravity" design language. Three layers:
+     ground (white, ink, mint) · action (orange, clickable only) · parts box (physics objects only) */
+  --wb-canvas: #FFFFFF;    /* page */
+  --wb-bench: #F4F7F5;     /* quiet panel ground, faint mint tint */
+  --wb-ink: #141A17;       /* text */
+  --wb-ink-2: #48524D;
+  --wb-ink-3: #6B7570;
+  --wb-line: #E1E7E3;      /* hairlines */
+  --wb-grid: #CFE8D6;      /* the floor grid */
+  --wb-axis: #2FB36B;      /* axis lines, "Saved" */
+  --wb-orange: #FF6B35;    /* action — nothing decorative is orange */
+  --wb-blue: #29ABE2;      /* mascot */
+  --part-teal: #0F8A8A;    /* boards */
+  --part-yellow: #F5C518;  /* motors */
+  --part-blue: #2453D6;    /* sensors */
+  --part-red: #E5484D;     /* LEDs, power */
 }
 
 .dark {
@@ -213,25 +245,170 @@
   }
 }
 
+/* --- Workbench system --- */
+@layer utilities {
+  /* Floating editor panel (Quick Tools, CAD drawer). */
+  .wb-panel {
+    background: var(--wb-canvas);
+    border: 1px solid var(--wb-line);
+    border-radius: 18px;
+    box-shadow:
+      0 1px 2px rgba(28, 36, 33, 0.06),
+      0 18px 40px -18px rgba(28, 36, 33, 0.22);
+  }
+
+  /* Primary action — same orange tile as the editor's Save button, with a
+     key-like bottom edge that presses in. */
+  .wb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-radius: 14px;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    transition:
+      transform 140ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 140ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      background-color 140ms ease;
+  }
+  .wb-btn-primary {
+    background: var(--wb-orange);
+    color: #fff;
+    box-shadow:
+      inset 0 -3px 0 rgba(120, 32, 0, 0.22),
+      0 10px 24px -10px rgba(255, 107, 53, 0.7);
+  }
+  .wb-btn-primary:hover {
+    transform: translateY(-1px);
+    background: #FF7A49;
+  }
+  .wb-btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 -1px 0 rgba(120, 32, 0, 0.22), 0 4px 10px -6px rgba(255, 107, 53, 0.7);
+  }
+
+  /* Literal keyboard keys, as in the editor's tool tiles and status bar. */
+  .wb-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5em;
+    padding: 0.1em 0.4em;
+    font-family: var(--font-key);
+    font-size: 0.75em;
+    font-weight: 500;
+    color: var(--wb-ink-2);
+    background: var(--wb-canvas);
+    border: 1px solid var(--wb-line);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+  }
+
+  /* The editor's ground plane: mint grid laid in perspective. */
+  .wb-floor {
+    position: absolute;
+    left: -50%;
+    right: -50%;
+    height: 120%;
+    bottom: -62%;
+    background-image:
+      linear-gradient(var(--wb-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--wb-grid) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: center top;
+    transform: perspective(700px) rotateX(62deg);
+    transform-origin: center top;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 55%, transparent 92%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 55%, transparent 92%);
+    pointer-events: none;
+  }
+  .wb-axis-x,
+  .wb-axis-y {
+    position: absolute;
+    background: var(--wb-axis);
+    opacity: 0.55;
+  }
+
+  /* Single page-load sequence: floor settles, then the workspace assembles. */
+  .wb-rise {
+    opacity: 0;
+    animation: wb-rise 720ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  .wb-pop {
+    opacity: 0;
+    animation: wb-pop 520ms cubic-bezier(0.3, 1.4, 0.5, 1) forwards;
+  }
+  .wb-floor-in {
+    animation: wb-floor-in 1100ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wb-rise,
+    .wb-pop,
+    .wb-floor-in {
+      opacity: 1;
+      animation: none;
+    }
+  }
+}
+
+/* Endless strip of robot tiles (list is rendered twice, so -50% loops seamlessly). */
+.wb-marquee {
+  animation: wb-marquee 48s linear infinite;
+}
+.wb-marquee:hover {
+  animation-play-state: paused;
+}
+/* Arabic: keep the page layout, but let each block of text run and align right-to-left on its own. */
+:lang(ar) :where(h1, h2, h3, h4, p, li, dt, dd, label, figcaption, option, input, textarea) {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+@keyframes wb-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wb-marquee { animation: none; }
+}
+
+/* Ultrasonic "ping" arcs in the features wiring tile. */
+.wb-ping {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: wb-ping 1.4s ease-out infinite;
+}
+@keyframes wb-ping {
+  0% { opacity: 0; transform: translateX(0) scale(0.6); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(18px) scale(1.25); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wb-ping { animation: none; opacity: 1; }
+}
+
+@keyframes wb-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes wb-pop {
+  from { opacity: 0; transform: translateY(10px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes wb-floor-in {
+  from { opacity: 0; transform: perspective(700px) rotateX(75deg); }
+  to { opacity: 1; transform: perspective(700px) rotateX(62deg); }
+}
+
 @keyframes bob {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
   50% { transform: translateY(-8px) rotate(2deg); }
 }
 .animate-bob {
   animation: bob 3s ease-in-out infinite;
-}
-
-/* Bolt guide: pulsing spotlight on the button he explains + speech-bubble pop */
-@keyframes cx-bolt-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
-}
-@keyframes cx-bolt-pop {
-  from { opacity: 0; transform: translateY(6px) scale(0.97); }
-  to { opacity: 1; transform: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  [style*="cx-bolt-pulse"] { animation: none !important; }
 }
 
 @keyframes scroll-line {
@@ -251,4 +428,35 @@
   display: inline-block;
   opacity: 0;
   animation: word-rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+/* Bolt guide: pulsing spotlight on the button he explains + speech-bubble pop */
+@keyframes cx-bolt-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@keyframes cx-bolt-pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="cx-bolt-pulse"] { animation: none !important; }
+}
+
+/* Servo, the dashboard mascot (new dashboard's first-visit screen) */
+.servo-float { animation: servo-float 3.4s ease-in-out infinite; }
+.servo-shadow { animation: servo-shadow 3.4s ease-in-out infinite; transform-origin: 60px 130px; }
+.servo-horn-idle { animation: servo-horn-idle 4.5s ease-in-out infinite; }
+.servo-horn-think { animation: servo-horn-think 1.2s ease-in-out infinite; }
+.servo-horn-spin { animation: servo-horn-spin 0.9s linear infinite; }
+.servo-arm-l { animation: servo-arm 3.4s ease-in-out infinite; }
+.servo-arm-r { animation: servo-arm 3.4s ease-in-out infinite reverse; }
+@keyframes servo-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes servo-shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.88); opacity: 0.75; } }
+@keyframes servo-horn-idle { 0%, 70%, 100% { transform: rotate(0deg); } 80% { transform: rotate(-14deg); } 90% { transform: rotate(10deg); } }
+@keyframes servo-horn-think { 0%, 100% { transform: rotate(-18deg); } 50% { transform: rotate(18deg); } }
+@keyframes servo-horn-spin { to { transform: rotate(360deg); } }
+@keyframes servo-arm { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .servo-float, .servo-shadow, .servo-horn-idle, .servo-horn-think, .servo-horn-spin, .servo-arm-l, .servo-arm-r { animation: none; }
 }
