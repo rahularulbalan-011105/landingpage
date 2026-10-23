@@ -34,7 +34,7 @@ const columns = (f: Messages["footer"]): { title: string; links: FooterLink[] }[
   {
     title: f.colCommunity,
     links: [
-      { label: f.whatsapp, href: "https://chat.whatsapp.com/Kxikh3QnPIaHW92hssMTRK?s=cl&p=a&ilr=1&amv=0" },
+      { label: f.discord, href: "https://discord.gg/QzEJ4Vrgn" },
       { label: f.atumx, href: ATUMX_URL },
     ],
   },
@@ -110,7 +110,7 @@ export function Footer() {
                   ) : (
                     <a
                       href={l.href}
-                      onClick={() => l.href?.includes("whatsapp") && ctrack("whatsapp_click")}
+                      onClick={() => l.href?.includes("discord") && ctrack("whatsapp_click")}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={linkCls}

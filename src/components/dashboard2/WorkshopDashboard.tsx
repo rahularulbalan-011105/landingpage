@@ -723,8 +723,8 @@ function FloatingBar({
               <a href="https://www.youtube.com/@AtumX" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 rounded-[9px] px-3 py-2 text-[13.5px] text-wb-ink-2 hover:bg-wb-bench">
                 <Youtube className="h-4 w-4" /> Tutorials
               </a>
-              <a href="https://chat.whatsapp.com/Kxikh3QnPIaHW92hssMTRK?s=cl&p=a&ilr=1&amv=0" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 rounded-[9px] px-3 py-2 text-[13.5px] text-wb-ink-2 hover:bg-wb-bench">
-                <MessageCircle className="h-4 w-4" /> Community chat
+              <a href="https://discord.gg/QzEJ4Vrgn" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 rounded-[9px] px-3 py-2 text-[13.5px] text-wb-ink-2 hover:bg-wb-bench">
+                <MessageCircle className="h-4 w-4" /> Discord community
               </a>
               <div className="my-1 h-px bg-wb-line" />
               <button

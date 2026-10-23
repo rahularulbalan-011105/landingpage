@@ -85,7 +85,8 @@ function sourceFromReferrer(ref: string): string | null {
     if (!h || /constructa|atumx/.test(h)) return null;
     if (h.includes("instagram")) return "instagram";
     if (h.includes("youtube") || h.includes("youtu.be")) return "youtube";
-    if (h.includes("whatsapp") || h.includes("wa.me")) return "whatsapp";
+    if (h.includes("discord")) return "discord";
+    if (h.includes("whatsapp") || h.includes("wa.me")) return "whatsapp";   // older links still circulating
     if (h.includes("facebook") || h.startsWith("fb.") || h.includes("fb.me")) return "facebook";
     if (h.includes("linkedin") || h === "lnkd.in") return "linkedin";
     if (h.includes("twitter") || h === "x.com" || h === "t.co") return "twitter";

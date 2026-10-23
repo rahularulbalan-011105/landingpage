@@ -163,7 +163,7 @@ export const fr: Messages = {
     note: "Nouvelles fonctionnalités, versions et astuces arrivent direct à cette adresse.",
     noteDesktop: "Pas de spam.",
     notePhone: "(Sur téléphone ? On t’enverra un lien pour l’ouvrir sur un ordinateur.)",
-    whatsapp: "Rejoins la communauté WhatsApp",
+    discord: "Rejoins la communauté Discord",
     youreIn: "C’est bon, tu es inscrit.",
     successBefore:
       "On t’enverra désormais chaque nouveauté de Constructa par e-mail. Envie de t’y mettre tout de suite ? Rejoins l’atelier sur un ",
@@ -193,7 +193,7 @@ export const fr: Messages = {
     tinkercadPost: "Alternative à Tinkercad pour la robotique",
     blog: "Blog AtumX",
     faq: "FAQ",
-    whatsapp: "Communauté WhatsApp",
+    discord: "Communauté Discord",
     atumx: "AtumX",
     address: "Anna University Incubation, Chennai, Inde",
     language: "Langue",

@@ -154,7 +154,7 @@ export const en = {
     note: "New features, releases and tips go straight to this email.",
     noteDesktop: "No spam.",
     notePhone: "(On a phone? We'll email a link to open it on a computer.)",
-    whatsapp: "Join the WhatsApp community",
+    discord: "Join the Discord community",
     youreIn: "You’re in.",
     // The three success pieces are joined with no extra spaces, so put any needed spaces inside them.
     successBefore: "We’ll email you every Constructa update from here. Want to dive in right now? Jump into the workshop on a ",
@@ -184,7 +184,7 @@ export const en = {
     tinkercadPost: "Tinkercad alternative for robotics",
     blog: "AtumX blog",
     faq: "FAQ",
-    whatsapp: "WhatsApp community",
+    discord: "Discord community",
     atumx: "AtumX",
     address: "Anna University Incubation, Chennai, India",
     language: "Language",
