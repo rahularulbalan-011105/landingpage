@@ -102,7 +102,13 @@ function Dashboard() {
   // A shared community link (?highlight=<id>) opens straight on the Community tab.
   const [tab, setTab] = useState<"mine" | "community">(highlight ? "community" : "mine");
 
-  const { data: projects } = useQuery({ queryKey: ["projects"], queryFn: listProjects });
+  const { data: projects, isError: projectsFailed } = useQuery({ queryKey: ["projects"], queryFn: listProjects });
+
+  // Without this a failed load renders the "Your workshop is empty" screen, which
+  // reads as "my robots are gone" rather than "the list did not load".
+  useEffect(() => {
+    if (projectsFailed) toast.error("Couldn't load your robots. Check your connection and refresh.");
+  }, [projectsFailed]);
   const { data: community } = useQuery({
     queryKey: ["community"],
     queryFn: listCommunity,

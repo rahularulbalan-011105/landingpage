@@ -22,11 +22,23 @@ async function currentUserId(): Promise<string> {
   return data.user.id;
 }
 
-/** All of the signed-in user's projects, newest activity first. RLS scopes this to them. */
+/**
+ * All of the signed-in user's own projects, newest activity first.
+ *
+ * The owner filter is NOT optional. `projects` carries two permissive SELECT
+ * policies — "Users read own projects" (user_id = auth.uid()) and "Anyone reads
+ * public projects" (is_public = true) — and Postgres combines permissive
+ * policies with OR. So an unfiltered select returns your rows PLUS every
+ * published row on the platform, which put other people's builds in My robots.
+ *
+ * RLS is the security boundary; this is the query saying which rows it wants.
+ */
 export async function listProjects(): Promise<Project[]> {
+  const user_id = await currentUserId();
   const { data, error } = await supabase
     .from("projects")
     .select(LIST_COLS)
+    .eq("user_id", user_id)
     .order("updated_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as unknown as Project[];
