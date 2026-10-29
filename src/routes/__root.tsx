@@ -79,11 +79,9 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   );
 }
 
-const FAVICON =
-  "data:image/svg+xml;utf8," +
-  encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="3" y="3" width="58" height="58" rx="16" fill="%23FFFFFF" stroke="%23111111" stroke-width="4"/><text x="50%25" y="56%25" text-anchor="middle" dominant-baseline="middle" font-family="'Baloo 2', sans-serif" font-weight="800" font-size="42" fill="%23FF6B35" stroke="%23111111" stroke-width="1.2">C</text></svg>`
-  );
+// Favicons are real files under public/ on purpose. A data: URI renders in a
+// browser tab but is NOT crawlable, so Google falls back to the generic globe
+// in search results. /favicon.ico is the one Google looks for first.
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -106,7 +104,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: FAVICON },
+      { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/png", sizes: "96x96", href: "/favicon-96.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
