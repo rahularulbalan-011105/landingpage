@@ -6,6 +6,7 @@ export const zh: Messages = {
     features: "功能",
     whatsNew: "新动态",
     newBadge: "新",
+    community: "社区",
     login: "登录",
     start: "启动 Constructa",
     myRobots: "我的机器人",

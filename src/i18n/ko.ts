@@ -6,6 +6,7 @@ export const ko: Messages = {
     features: "기능",
     whatsNew: "새 소식",
     newBadge: "NEW",
+    community: "커뮤니티",
     login: "로그인",
     start: "Constructa 시작",
     myRobots: "내 로봇",

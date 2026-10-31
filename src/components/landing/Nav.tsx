@@ -58,6 +58,13 @@ export function Nav() {
               {l.dot && <span aria-label={t.nav.newBadge} className="h-1.5 w-1.5 rounded-full bg-wb-orange" />}
             </a>
           ))}
+          {/* A real route, not an on-page anchor — and open to everyone, signed in or not. */}
+          <Link
+            to="/community"
+            className="relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[15px] font-medium text-wb-ink-2 transition-colors hover:bg-wb-bench hover:text-wb-ink"
+          >
+            {t.nav.community}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-3">

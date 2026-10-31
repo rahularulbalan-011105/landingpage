@@ -6,6 +6,7 @@ export const ar: Messages = {
     features: "المزايا",
     whatsNew: "الجديد",
     newBadge: "جديد",
+    community: "المجتمع",
     login: "دخول",
     start: "ابدأ Constructa",
     myRobots: "روبوتاتي",

@@ -6,6 +6,7 @@ export const ru: Messages = {
     features: "Возможности",
     whatsNew: "Что нового",
     newBadge: "новое",
+    community: "Сообщество",
     login: "Войти",
     start: "Открыть Constructa",
     myRobots: "Мои роботы",

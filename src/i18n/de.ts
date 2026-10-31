@@ -6,6 +6,7 @@ export const de: Messages = {
     features: "Features",
     whatsNew: "Neuigkeiten",
     newBadge: "neu",
+    community: "Community",
     login: "Anmelden",
     start: "Constructa starten",
     myRobots: "Meine Roboter",

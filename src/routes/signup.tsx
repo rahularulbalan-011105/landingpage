@@ -9,12 +9,32 @@ import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({ meta: [{ title: "Create your account | Constructa" }] }),
+  // Same shape as /login: the community page sends people here when an action
+  // needs an account, and expects them back where they were. `reuse` carries
+  // the build they were trying to copy so the copy completes on arrival.
+  validateSearch: (search: Record<string, unknown>): { redirect?: string; reuse?: string } => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+    reuse: typeof search.reuse === "string" ? search.reuse : undefined,
+  }),
   component: SignupPage,
 });
 
 function SignupPage() {
   const { signUp, user, loading } = useAuth();
   const navigate = useNavigate();
+  const { redirect, reuse } = Route.useSearch();
+
+  // Only same-site paths, so a crafted ?redirect= can't bounce anyone off-site.
+  const dest =
+    (redirect && redirect.startsWith("/") ? redirect : "/dashboard") +
+    (reuse ? `?reuse=${encodeURIComponent(reuse)}` : "");
+
+  // A dest with a query can't go through the typed router navigate, so fall
+  // back to a plain navigation for those.
+  const go = (d: string) => {
+    if (d.includes("?")) window.location.href = d;
+    else navigate({ to: d, replace: true });
+  };
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,10 +45,10 @@ function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
-  // Already signed in → straight to the dashboard.
+  // Already signed in → straight on to wherever they were headed.
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/dashboard", replace: true });
-  }, [loading, user, navigate]);
+    if (!loading && user) go(dest);
+  }, [loading, user, dest]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function validate(): string | null {
     if (!name.trim()) return "Please tell us your name.";
@@ -51,7 +71,7 @@ function SignupPage() {
 
     if (error) return setError(error);
     if (needsConfirmation) return setDone(true);
-    navigate({ to: "/dashboard", replace: true });
+    go(dest);
   }
 
   if (done) {

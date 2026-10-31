@@ -6,6 +6,7 @@ export const ja: Messages = {
     features: "機能",
     whatsNew: "新着",
     newBadge: "NEW",
+    community: "コミュニティ",
     login: "ログイン",
     start: "Constructaを始める",
     myRobots: "マイロボット",

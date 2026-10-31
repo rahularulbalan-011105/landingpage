@@ -6,6 +6,7 @@ export const pt: Messages = {
     features: "Recursos",
     whatsNew: "Novidades",
     newBadge: "novo",
+    community: "Comunidade",
     login: "Entrar",
     start: "Abrir Constructa",
     myRobots: "Meus robôs",

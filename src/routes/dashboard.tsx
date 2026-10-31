@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -6,15 +6,11 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAuth, displayName } from "@/lib/auth";
 import {
   WorkshopDashboard,
-  type CommunityAction,
-  type CommunityRobot,
   type FloorRobot,
   type RobotAction,
 } from "@/components/dashboard2/WorkshopDashboard";
 import {
   listProjects,
-  listCommunity,
-  listMyLikes,
   getProject,
   createProject,
   updateProject,
@@ -23,19 +19,23 @@ import {
   reopenDraft,
   publishToCommunity,
   unpublishFromCommunity,
-  likeProject,
-  unlikeProject,
-  forkProject,
   getOrCreateShareToken,
 } from "@/lib/projects";
 import { downloadProjectJSON } from "@/lib/download";
-import { openWorkspace } from "@/lib/workspace";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard | Constructa" }] }),
   validateSearch: (search: Record<string, unknown>): { highlight?: string } => ({
     highlight: typeof search.highlight === "string" ? search.highlight : undefined,
   }),
+  // Links shared before the community became public still point at
+  // /dashboard?highlight=… — send them to the public page, which anyone can
+  // open, instead of bouncing the recipient to a login screen.
+  beforeLoad: ({ search }) => {
+    if (search.highlight) {
+      throw redirect({ to: "/community", search: { highlight: search.highlight } });
+    }
+  },
   component: () => (
     <RequireAuth>
       <Dashboard />
@@ -97,11 +97,6 @@ function Dashboard() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { user, signOut } = useAuth();
-  const { highlight } = Route.useSearch();
-
-  // A shared community link (?highlight=<id>) opens straight on the Community tab.
-  const [tab, setTab] = useState<"mine" | "community">(highlight ? "community" : "mine");
-
   const { data: projects, isError: projectsFailed } = useQuery({ queryKey: ["projects"], queryFn: listProjects });
 
   // Without this a failed load renders the "Your workshop is empty" screen, which
@@ -109,22 +104,7 @@ function Dashboard() {
   useEffect(() => {
     if (projectsFailed) toast.error("Couldn't load your robots. Check your connection and refresh.");
   }, [projectsFailed]);
-  const { data: community } = useQuery({
-    queryKey: ["community"],
-    queryFn: listCommunity,
-    enabled: tab === "community",
-  });
-  const { data: likes } = useQuery({
-    queryKey: ["likes"],
-    queryFn: listMyLikes,
-    enabled: tab === "community",
-  });
-
   const refreshMine = () => qc.invalidateQueries({ queryKey: ["projects"] });
-  const refreshCommunity = () => {
-    qc.invalidateQueries({ queryKey: ["community"] });
-    qc.invalidateQueries({ queryKey: ["likes"] });
-  };
 
   // ── my robots ──────────────────────────────────────────────────────────────
 
@@ -182,7 +162,8 @@ function Dashboard() {
     },
     onSuccess: (message, { action }) => {
       if (action !== "share" && action !== "download") refreshMine();
-      if (action === "publish") refreshCommunity();
+      // Publishing changes what /community shows, so drop its cached list.
+      if (action === "publish") qc.invalidateQueries({ queryKey: ["community"] });
       if (message) toast.success(message);
     },
     onError: () => toast.error("That didn't work. Please try again."),
@@ -192,84 +173,19 @@ function Dashboard() {
     mutationFn: ({ id, title }: { id: string; title: string }) => updateProject(id, { title }),
     onSuccess: () => {
       refreshMine();
-      refreshCommunity();
+      qc.invalidateQueries({ queryKey: ["community"] });
     },
     onError: () => toast.error("Couldn't rename that robot."),
   });
-
-  // ── community ──────────────────────────────────────────────────────────────
-
-  const communityRobots: CommunityRobot[] = useMemo(
-    () =>
-      (community ?? []).map((p) => ({
-        id: p.id,
-        title: p.title,
-        author: p.author_name || "A builder",
-        likes: p.likes_count ?? 0,
-        liked: likes?.has(p.id) ?? false,
-        publishedAgo: ago(p.published_at),
-        age: minutesSince(p.published_at),
-        own: p.user_id === user?.id,
-      })),
-    [community, likes, user?.id],
-  );
-
-  const likeMut = useMutation({
-    mutationFn: async (id: string) => {
-      const liked = likes?.has(id) ?? false;
-      await (liked ? unlikeProject(id) : likeProject(id));
-    },
-    onSuccess: refreshCommunity,
-    onError: () => toast.error("Couldn't update your like."),
-  });
-
-  // The community list omits `content`, so load the full project before forking.
-  const reuseMut = useMutation({
-    mutationFn: async (id: string) => {
-      const full = await getProject(id);
-      if (!full) throw new Error("missing project");
-      return forkProject(full);
-    },
-    onSuccess: (made) => {
-      refreshMine();
-      setTab("mine");
-      toast.success(`“${made.title}” is now in My robots. Edit it freely — the original stays as it is.`);
-    },
-    onError: () => toast.error("Couldn't copy that robot. Please try again."),
-  });
-
-  const onCommunity = (id: string, action: CommunityAction) => {
-    switch (action) {
-      case "like":
-        return likeMut.mutate(id);
-      case "view":
-        return void openWorkspace(id, { readOnly: true });
-      case "reuse":
-        return reuseMut.mutate(id);
-      case "share": {
-        const origin = typeof window !== "undefined" ? window.location.origin : "";
-        return void copyLink(`${origin}/dashboard?highlight=${id}`, "Link copied ✓ — share it with anyone");
-      }
-    }
-  };
-
-  // Landing on a ?highlight= link should show the Community tab.
-  useEffect(() => {
-    if (highlight) setTab("community");
-  }, [highlight]);
 
   return (
     <WorkshopDashboard
       name={displayName(user)}
       robots={robots}
-      tab={tab}
-      onTab={setTab}
       onNew={() => createMut.mutate()}
       onOpen={(id) => navigate({ to: "/project/$id", params: { id } })}
       onAction={(id, action) => actionMut.mutate({ id, action })}
       onRename={(id, title) => renameMut.mutate({ id, title })}
-      community={communityRobots}
-      onCommunity={onCommunity}
       onSignOut={() => {
         void signOut().then(() => navigate({ to: "/" }));
       }}

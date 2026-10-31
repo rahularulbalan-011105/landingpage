@@ -9,6 +9,7 @@ export const en = {
     features: "Features",
     whatsNew: "What's new",
     newBadge: "new",
+    community: "Community",
     login: "Log in",
     start: "Start Constructa",
     myRobots: "My robots",
