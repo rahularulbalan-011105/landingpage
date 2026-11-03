@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initLandingTracker } from "../lib/landing-tracker";
+import { initGoogleAds } from "../lib/google-ads";
 import { LanguageProvider } from "../i18n";
 import { AuthProvider } from "../lib/auth";
 import { Toaster } from "../components/ui/sonner";
@@ -141,6 +142,7 @@ function RootComponent() {
   // Record a landing page view once per tab-session (client-only).
   useEffect(() => {
     initLandingTracker();
+    initGoogleAds();
   }, []);
   return (
     <QueryClientProvider client={queryClient}>
