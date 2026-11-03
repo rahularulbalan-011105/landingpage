@@ -10,7 +10,8 @@
  *            belong to the same person.
  *  • attribution — utm_* / ref captured on ARRIVAL and stored, so it survives
  *            navigating to /signup, /login, /dashboard (which drop the query).
- *            Rule: explicit UTM > external referrer > previously stored > direct.
+ *            Rule: explicit UTM > Google Ads click id (gclid) > external
+ *            referrer > previously stored > direct.
  *  • email — attached once the visitor signs up / logs in.
  *
  * SSR-safe: every function no-ops on the server. Sends are text/plain beacons
@@ -111,6 +112,10 @@ function resolveAttribution(): Attribution {
   if (p.get("utm_source")) {
     fresh = { ...DIRECT, ref: (p.get("ref") || "").slice(0, 80), referrer: (document.referrer || "").slice(0, 300) };
     for (const k of UTM) fresh[k] = (p.get("utm_" + k) || "").slice(0, 120);
+  } else if (p.get("gclid") || p.get("gbraid") || p.get("wbraid")) {
+    // A Google Ads click (auto-tagging) with no UTM suffix. Without this it would
+    // look like organic search ("google / referral") and its cost would have no signups.
+    fresh = { ...DIRECT, source: "google", medium: "cpc", ref: (p.get("ref") || "").slice(0, 80), referrer: (document.referrer || "").slice(0, 300) };
   } else {
     const inferred = sourceFromReferrer(document.referrer);
     if (inferred)

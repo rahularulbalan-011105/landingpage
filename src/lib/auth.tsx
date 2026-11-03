@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { ctrack, setTrackedEmail, signupAttribution } from "@/lib/landing-tracker";
+import { reportSignupConversion } from "@/lib/google-ads";
 
 type AuthResult = { error: string | null };
 type SignUpResult = AuthResult & { needsConfirmation?: boolean };
@@ -90,7 +91,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // An existing email comes back "successful" with no identities (Supabase hides
           // account enumeration) — only count genuinely new accounts as sign-ups.
           const isNew = !data.user || (data.user.identities?.length ?? 1) > 0;
-          if (isNew) ctrack("signup", email, { confirmed: !!data.session });
+          if (isNew) {
+            ctrack("signup", email, { confirmed: !!data.session });
+            reportSignupConversion();
+          }
           // If email confirmation is ON, Supabase returns a user but no session.
           return { error: null, needsConfirmation: !data.session };
         } catch (e: any) {
