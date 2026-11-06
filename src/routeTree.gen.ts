@@ -14,6 +14,7 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as TutorialsRouteImport } from './routes/tutorials'
 import { Route as ProjectIdRouteImport } from './routes/project.$id'
 import { Route as ShareTokenRouteImport } from './routes/share.$token'
 
@@ -42,6 +43,11 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TutorialsRoute = TutorialsRouteImport.update({
+  id: '/tutorials',
+  path: '/tutorials',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectIdRoute = ProjectIdRouteImport.update({
   id: '/project/$id',
   path: '/project/$id',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/tutorials': typeof TutorialsRoute
   '/project/$id': typeof ProjectIdRoute
   '/share/$token': typeof ShareTokenRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/tutorials': typeof TutorialsRoute
   '/project/$id': typeof ProjectIdRoute
   '/share/$token': typeof ShareTokenRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/tutorials': typeof TutorialsRoute
   '/project/$id': typeof ProjectIdRoute
   '/share/$token': typeof ShareTokenRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/tutorials'
     | '/project/$id'
     | '/share/$token'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/tutorials'
     | '/project/$id'
     | '/share/$token'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/tutorials'
     | '/project/$id'
     | '/share/$token'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  TutorialsRoute: typeof TutorialsRoute
   ProjectIdRoute: typeof ProjectIdRoute
   ShareTokenRoute: typeof ShareTokenRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tutorials': {
+      id: '/tutorials'
+      path: '/tutorials'
+      fullPath: '/tutorials'
+      preLoaderRoute: typeof TutorialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/project/$id': {
       id: '/project/$id'
       path: '/project/$id'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  TutorialsRoute: TutorialsRoute,
   ProjectIdRoute: ProjectIdRoute,
   ShareTokenRoute: ShareTokenRoute,
 }

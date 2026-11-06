@@ -232,6 +232,12 @@ function CommunityBar({ name, onSignOut }: { name: string | null; onSignOut: () 
         >
           Community
         </span>
+        <Link
+          to="/tutorials"
+          className="whitespace-nowrap rounded-full px-3 py-1.5 text-[13.5px] font-semibold text-wb-ink-2 transition-colors hover:text-wb-ink"
+        >
+          Tutorials
+        </Link>
         <span className="mx-1 h-5 w-px bg-wb-line" />
         {name ? (
           <button

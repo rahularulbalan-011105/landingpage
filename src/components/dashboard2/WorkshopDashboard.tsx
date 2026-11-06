@@ -17,7 +17,6 @@ import {
   RotateCcw,
   Search,
   Trash2,
-  Youtube,
 } from "lucide-react";
 import logo from "@/assets/constructa-logo.webp";
 import { ServoBot } from "./ServoBot";
@@ -454,6 +453,12 @@ function FloatingBar({
         >
           Community
         </Link>
+        <Link
+          to="/tutorials"
+          className="whitespace-nowrap rounded-full px-3 py-1.5 text-[13.5px] font-semibold text-wb-ink-2 transition-colors hover:text-wb-ink"
+        >
+          Tutorials
+        </Link>
         <span className="mx-1 h-5 w-px bg-wb-line" />
         <button
           type="button"
@@ -478,9 +483,6 @@ function FloatingBar({
           {menu && (
             <div className="absolute right-0 top-11 w-56 rounded-[14px] border border-wb-line bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(28,36,33,0.35)]">
               <p className="px-3 pb-2 pt-1.5 text-[13px] font-semibold">{name}</p>
-              <a href="https://www.youtube.com/@AtumX" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 rounded-[9px] px-3 py-2 text-[13.5px] text-wb-ink-2 hover:bg-wb-bench">
-                <Youtube className="h-4 w-4" /> Tutorials
-              </a>
               <a href="https://discord.gg/QzEJ4Vrgn" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 rounded-[9px] px-3 py-2 text-[13.5px] text-wb-ink-2 hover:bg-wb-bench">
                 <MessageCircle className="h-4 w-4" /> Discord community
               </a>
