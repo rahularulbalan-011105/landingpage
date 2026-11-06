@@ -97,7 +97,13 @@ function Dashboard() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { user, signOut } = useAuth();
-  const { data: projects, isError: projectsFailed } = useQuery({ queryKey: ["projects"], queryFn: listProjects });
+  // Refetch on focus: a rename made in the editor (another tab) shows up as soon
+  // as the user comes back, instead of after the 60s stale window.
+  const { data: projects, isError: projectsFailed } = useQuery({
+    queryKey: ["projects"],
+    queryFn: listProjects,
+    refetchOnWindowFocus: true,
+  });
 
   // Without this a failed load renders the "Your workshop is empty" screen, which
   // reads as "my robots are gone" rather than "the list did not load".
