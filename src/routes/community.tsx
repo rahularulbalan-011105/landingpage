@@ -43,7 +43,8 @@ export const Route = createFileRoute("/community")({
       },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>): { highlight?: string; reuse?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { open?: string; highlight?: string; reuse?: string } => ({
+    open: typeof search.open === "string" ? search.open : undefined,
     highlight: typeof search.highlight === "string" ? search.highlight : undefined,
     reuse: typeof search.reuse === "string" ? search.reuse : undefined,
   }),
@@ -91,7 +92,21 @@ function Community() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { user, loading, signOut } = useAuth();
-  const { reuse } = Route.useSearch();
+  const { reuse, open, highlight } = Route.useSearch();
+
+  // A shared link (?open=<id>, or the older ?highlight=<id>) goes straight into
+  // the robot, read-only — the person who got the link wants that robot, not the
+  // list. The param is dropped first (replace) so Back from the editor lands on
+  // the plain list instead of bouncing into the robot again.
+  const sharedId = open ?? highlight;
+  const openedShared = useRef(false);
+  useEffect(() => {
+    if (!sharedId || openedShared.current) return;
+    openedShared.current = true;
+    navigate({ to: "/community", replace: true });
+    void openWorkspace(sharedId, { readOnly: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sharedId]);
 
   const { data: community, isError } = useQuery({ queryKey: ["community"], queryFn: listCommunity });
 
@@ -180,7 +195,7 @@ function Community() {
         return void openWorkspace(id, { readOnly: true });
       case "share": {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
-        return void copyLink(`${origin}/community?highlight=${id}`, "Link copied — share it with anyone");
+        return void copyLink(`${origin}/community?open=${id}`, "Link copied — share it with anyone");
       }
       case "like":
         if (!user) return askToSignUp("Create a free account to like builds.");
