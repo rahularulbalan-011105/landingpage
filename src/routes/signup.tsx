@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
+import { GoogleSignIn } from "@/components/auth/GoogleButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/loaders";
@@ -107,6 +108,7 @@ function SignupPage() {
         </>
       }
     >
+      <GoogleSignIn redirectPath={dest} disabled={submitting} />
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <Field label="Name" htmlFor="name">
           <Input

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
+import { GoogleSignIn } from "@/components/auth/GoogleButton";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/loaders";
 import { Field, PasswordInput } from "./signup";
@@ -64,6 +65,7 @@ function LoginPage() {
         </>
       }
     >
+      <GoogleSignIn redirectPath={dest} disabled={submitting} />
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <Field label="Email" htmlFor="email">
           <Input
@@ -87,6 +89,13 @@ function LoginPage() {
             autoComplete="current-password"
             disabled={submitting}
           />
+          <Link
+            to="/forgot-password"
+            search={email.trim() ? { email: email.trim() } : {}}
+            className="self-end text-xs font-bold text-primary hover:underline"
+          >
+            Forgot password?
+          </Link>
         </Field>
 
         {error && (
