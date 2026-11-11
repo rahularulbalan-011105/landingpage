@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TutorialsRouteImport } from './routes/tutorials'
 import { Route as ProjectIdRouteImport } from './routes/project.$id'
@@ -36,6 +37,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/signup': typeof SignupRoute
   '/tutorials': typeof TutorialsRoute
   '/project/$id': typeof ProjectIdRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/signup': typeof SignupRoute
   '/tutorials': typeof TutorialsRoute
   '/project/$id': typeof ProjectIdRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/signup': typeof SignupRoute
   '/tutorials': typeof TutorialsRoute
   '/project/$id': typeof ProjectIdRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/dashboard'
     | '/login'
+    | '/privacy'
     | '/signup'
     | '/tutorials'
     | '/project/$id'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/dashboard'
     | '/login'
+    | '/privacy'
     | '/signup'
     | '/tutorials'
     | '/project/$id'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/dashboard'
     | '/login'
+    | '/privacy'
     | '/signup'
     | '/tutorials'
     | '/project/$id'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   SignupRoute: typeof SignupRoute
   TutorialsRoute: typeof TutorialsRoute
   ProjectIdRoute: typeof ProjectIdRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   SignupRoute: SignupRoute,
   TutorialsRoute: TutorialsRoute,
   ProjectIdRoute: ProjectIdRoute,

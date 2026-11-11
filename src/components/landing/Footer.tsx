@@ -148,7 +148,12 @@ export function Footer() {
 
       <div className="border-t border-wb-line">
         <div className="mx-auto flex max-w-[1320px] flex-col gap-2 px-5 py-5 text-[12.5px] text-wb-ink-3 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p>© 2026 AtumX Innovations Pvt Ltd</p>
+          <p>
+            © 2026 AtumX Innovations Pvt Ltd ·{" "}
+            <Link to="/privacy" className="hover:text-wb-ink">
+              Privacy
+            </Link>
+          </p>
           <p>{f.address}</p>
         </div>
       </div>
