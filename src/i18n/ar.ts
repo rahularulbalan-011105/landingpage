@@ -98,7 +98,6 @@ export const ar: Messages = {
     desc: "ابنِ مقاتلًا، وبرمج حركاته، ثم نازل روبوتات أصدقائك في الحلبة.",
     kicker: "الفيزياء الحقيقية نفسها. آخر روبوت صامد هو الفائز.",
     notify: "نبّهني",
-    daysToGo: "يومًا متبقيًا",
   },
   faq: {
     eyebrow: "الأسئلة الشائعة",
@@ -185,5 +184,13 @@ export const ar: Messages = {
     atumx: "AtumX",
     address: "حاضنة جامعة آنا، تشيناي، الهند",
     language: "اللغة",
+    updates: "الجديد",
+  },
+  // Announcement bar + homepage link only. The /updates page itself is English (src/data/updates.ts).
+  updates: {
+    seeWhatsNew: "اكتشف الجديد",
+    dismiss: "إغلاق",
+    new: "جديد",
+    seeAll: "عرض كل التحديثات",
   },
 };

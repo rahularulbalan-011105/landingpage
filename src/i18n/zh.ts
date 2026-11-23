@@ -98,7 +98,6 @@ export const zh: Messages = {
     desc: "造一台战斗机器人，编好它的招式，然后在竞技场里和朋友的机器人一决高下。",
     kicker: "同样的真实物理。最后站着的机器人获胜。",
     notify: "通知我",
-    daysToGo: "天后上线",
   },
   faq: {
     eyebrow: "常见问题",
@@ -185,5 +184,13 @@ export const zh: Messages = {
     atumx: "AtumX",
     address: "印度金奈 安娜大学孵化中心",
     language: "语言",
+    updates: "新功能",
+  },
+  // Announcement bar + homepage link only. The /updates page itself is English (src/data/updates.ts).
+  updates: {
+    seeWhatsNew: "查看新功能",
+    dismiss: "关闭",
+    new: "新功能",
+    seeAll: "查看全部更新",
   },
 };

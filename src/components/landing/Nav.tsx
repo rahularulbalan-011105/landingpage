@@ -7,6 +7,7 @@ import { LANGUAGES } from "@/lib/languages";
 import { ATUMX_URL } from "@/lib/links";
 import { ctrack } from "@/lib/landing-tracker";
 import { useI18n, useT } from "@/i18n";
+import { UpdateBar } from "./UpdateBar";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -32,6 +33,7 @@ export function Nav() {
         scrolled ? "bg-white/85 backdrop-blur-md border-b border-wb-line" : "bg-transparent border-b border-transparent",
       ].join(" ")}
     >
+      <UpdateBar collapsed={scrolled} />
       <div className="mx-auto flex h-[76px] max-w-[1320px] items-center justify-between gap-3 px-5 sm:gap-6 sm:px-8">
         <div className="flex items-center gap-2.5">
           <a href="#top" aria-label={t.nav.home}>
@@ -99,6 +101,8 @@ export function Nav() {
 /** Globe + current language code; opens the full list of languages the page is translated into. */
 function LanguageMenu() {
   const [open, setOpen] = useState(false);
+  // Phone-width list is pinned full-width under the button; the header's height varies (update bar).
+  const [top, setTop] = useState(72);
   const { lang, setLang, t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -123,7 +127,10 @@ function LanguageMenu() {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t.nav.language}
-        onClick={() => setOpen((o) => !o)}
+        onClick={(e) => {
+          setTop(e.currentTarget.getBoundingClientRect().bottom + 10);
+          setOpen((o) => !o);
+        }}
         className="inline-flex h-10 items-center gap-1.5 rounded-full px-2.5 text-[14px] font-semibold text-wb-ink-2 transition-colors hover:bg-wb-bench hover:text-wb-ink sm:px-3"
       >
         <Globe aria-hidden className="h-[18px] w-[18px]" />
@@ -135,7 +142,8 @@ function LanguageMenu() {
         <ul
           role="listbox"
           aria-label={t.nav.language}
-          className="wb-pop fixed inset-x-4 top-[72px] z-50 max-h-[min(420px,70vh)] overflow-y-auto rounded-[14px] border border-wb-line bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(28,36,33,0.35)] sm:absolute sm:inset-x-auto sm:end-0 sm:top-[calc(100%+8px)] sm:w-[230px]"
+          style={{ "--menu-top": `${top}px` } as React.CSSProperties}
+          className="wb-pop fixed inset-x-4 top-[var(--menu-top)] z-50 max-h-[min(420px,70vh)] overflow-y-auto rounded-[14px] border border-wb-line bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(28,36,33,0.35)] sm:absolute sm:inset-x-auto sm:end-0 sm:top-[calc(100%+8px)] sm:w-[230px]"
         >
           {LANGUAGES.map((l) => {
             const on = l.code === lang;

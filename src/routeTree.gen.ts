@@ -18,6 +18,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TutorialsRouteImport } from './routes/tutorials'
+import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as ProjectIdRouteImport } from './routes/project.$id'
 import { Route as ShareTokenRouteImport } from './routes/share.$token'
 
@@ -66,6 +67,11 @@ const TutorialsRoute = TutorialsRouteImport.update({
   path: '/tutorials',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpdatesRoute = UpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectIdRoute = ProjectIdRouteImport.update({
   id: '/project/$id',
   path: '/project/$id',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/tutorials': typeof TutorialsRoute
+  '/updates': typeof UpdatesRoute
   '/project/$id': typeof ProjectIdRoute
   '/share/$token': typeof ShareTokenRoute
 }
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/tutorials': typeof TutorialsRoute
+  '/updates': typeof UpdatesRoute
   '/project/$id': typeof ProjectIdRoute
   '/share/$token': typeof ShareTokenRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/tutorials': typeof TutorialsRoute
+  '/updates': typeof UpdatesRoute
   '/project/$id': typeof ProjectIdRoute
   '/share/$token': typeof ShareTokenRoute
 }
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/tutorials'
+    | '/updates'
     | '/project/$id'
     | '/share/$token'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/tutorials'
+    | '/updates'
     | '/project/$id'
     | '/share/$token'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/tutorials'
+    | '/updates'
     | '/project/$id'
     | '/share/$token'
   fileRoutesById: FileRoutesById
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   TutorialsRoute: typeof TutorialsRoute
+  UpdatesRoute: typeof UpdatesRoute
   ProjectIdRoute: typeof ProjectIdRoute
   ShareTokenRoute: typeof ShareTokenRoute
 }
@@ -238,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TutorialsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/updates': {
+      id: '/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof UpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/project/$id': {
       id: '/project/$id'
       path: '/project/$id'
@@ -265,6 +285,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   TutorialsRoute: TutorialsRoute,
+  UpdatesRoute: UpdatesRoute,
   ProjectIdRoute: ProjectIdRoute,
   ShareTokenRoute: ShareTokenRoute,
 }

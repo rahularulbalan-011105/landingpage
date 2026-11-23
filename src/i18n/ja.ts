@@ -98,7 +98,6 @@ export const ja: Messages = {
     desc: "ファイターをつくり、技をプログラミングして、アリーナで友だちのロボットとバトルしよう。",
     kicker: "物理演算はいつもどおりリアル。最後まで立っていたロボットの勝ちです。",
     notify: "通知を受け取る",
-    daysToGo: "日後に登場",
   },
   faq: {
     eyebrow: "よくある質問",
@@ -185,5 +184,13 @@ export const ja: Messages = {
     atumx: "AtumX",
     address: "インド・チェンナイ、アンナ大学インキュベーション",
     language: "言語",
+    updates: "新着",
+  },
+  // Announcement bar + homepage link only. The /updates page itself is English (src/data/updates.ts).
+  updates: {
+    seeWhatsNew: "新機能を見る",
+    dismiss: "閉じる",
+    new: "新機能",
+    seeAll: "すべてのアップデートを見る",
   },
 };

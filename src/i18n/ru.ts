@@ -110,7 +110,6 @@ export const ru: Messages = {
     desc: "Собери бойца, запрограммируй его приёмы и сразись с роботами друзей на арене.",
     kicker: "Всё та же настоящая физика. Побеждает последний устоявший.",
     notify: "Сообщить мне",
-    daysToGo: "дн. осталось",
   },
   faq: {
     eyebrow: "FAQ",
@@ -198,5 +197,13 @@ export const ru: Messages = {
     atumx: "AtumX",
     address: "Anna University Incubation, Ченнаи, Индия",
     language: "Язык",
+    updates: "Что нового",
+  },
+  // Announcement bar + homepage link only. The /updates page itself is English (src/data/updates.ts).
+  updates: {
+    seeWhatsNew: "Смотреть, что нового",
+    dismiss: "Закрыть",
+    new: "Новое",
+    seeAll: "Все обновления",
   },
 };

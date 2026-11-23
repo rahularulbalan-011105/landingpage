@@ -98,7 +98,6 @@ export const pt: Messages = {
     desc: "Monte um lutador, programe os golpes e enfrente os robôs dos seus amigos na arena.",
     kicker: "A mesma física real. Vence o último robô de pé.",
     notify: "Me avise",
-    daysToGo: "dias restantes",
   },
   faq: {
     eyebrow: "FAQ",
@@ -185,5 +184,13 @@ export const pt: Messages = {
     atumx: "AtumX",
     address: "Anna University Incubation, Chennai, Índia",
     language: "Idioma",
+    updates: "Novidades",
+  },
+  // Announcement bar + homepage link only. The /updates page itself is English (src/data/updates.ts).
+  updates: {
+    seeWhatsNew: "Ver novidades",
+    dismiss: "Fechar",
+    new: "Novo",
+    seeAll: "Ver todas as novidades",
   },
 };
