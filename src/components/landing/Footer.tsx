@@ -12,9 +12,10 @@ const columns = (f: Messages["footer"]): { title: string; links: FooterLink[] }[
   {
     title: f.colConstructa,
     links: [
-      { label: f.how, href: "#how" },
-      { label: f.features, href: "#features" },
-      { label: f.constructathon, href: "#constructathon" },
+      { label: f.how, href: "/#how" },
+      { label: f.features, href: "/#features" },
+      { label: f.constructathon, href: "/#constructathon" },
+      { label: f.updates, to: "/updates" },
       { label: f.startBuilding, to: "/signup" },
       { label: f.login, to: "/login" },
     ],
@@ -28,7 +29,7 @@ const columns = (f: Messages["footer"]): { title: string; links: FooterLink[] }[
         href: "https://www.atumx.in/blog/the-best-tinkercad-alternative-for-robotics-in-2026-that-actually-simulates-movement",
       },
       { label: f.blog, href: "https://www.atumx.in/blog" },
-      { label: f.faq, href: "#faq" },
+      { label: f.faq, href: "/#faq" },
     ],
   },
   {
@@ -103,7 +104,7 @@ export function Footer() {
                     <Link to={l.to} className={linkCls}>
                       {l.label}
                     </Link>
-                  ) : l.href?.startsWith("#") ? (
+                  ) : l.href?.startsWith("/#") ? (
                     <a href={l.href} className={linkCls}>
                       {l.label}
                     </a>

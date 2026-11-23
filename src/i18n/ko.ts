@@ -98,7 +98,6 @@ export const ko: Messages = {
     desc: "파이터를 만들고, 기술을 코딩하고, 아레나에서 친구들의 로봇과 대결하세요.",
     kicker: "물리 엔진은 그대로 진짜. 마지막까지 버틴 로봇이 이겨요.",
     notify: "알림 받기",
-    daysToGo: "일 남음",
   },
   faq: {
     eyebrow: "자주 묻는 질문",
@@ -185,5 +184,13 @@ export const ko: Messages = {
     atumx: "AtumX",
     address: "인도 첸나이, 안나 대학교 인큐베이션",
     language: "언어",
+    updates: "새 소식",
+  },
+  // Announcement bar + homepage link only. The /updates page itself is English (src/data/updates.ts).
+  updates: {
+    seeWhatsNew: "새 소식 보기",
+    dismiss: "닫기",
+    new: "신규",
+    seeAll: "모든 업데이트 보기",
   },
 };

@@ -456,6 +456,19 @@
 @keyframes servo-horn-idle { 0%, 70%, 100% { transform: rotate(0deg); } 80% { transform: rotate(-14deg); } 90% { transform: rotate(10deg); } }
 @keyframes servo-horn-think { 0%, 100% { transform: rotate(-18deg); } 50% { transform: rotate(18deg); } }
 @keyframes servo-horn-spin { to { transform: rotate(360deg); } }
+
+/* Announcement bar: the gear rolls in from the left (one full turn per its circumference) and settles. */
+.upd-gear-roll {
+  animation: upd-gear-roll 900ms cubic-bezier(0.2, 0.8, 0.25, 1) 250ms both;
+}
+@keyframes upd-gear-roll {
+  from { opacity: 0; transform: translateX(-50px) rotate(-360deg); }
+  25% { opacity: 1; }
+  to { opacity: 1; transform: translateX(0) rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .upd-gear-roll { animation: none; }
+}
 @keyframes servo-arm { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } }
 @media (prefers-reduced-motion: reduce) {
   .servo-float, .servo-shadow, .servo-horn-idle, .servo-horn-think, .servo-horn-spin, .servo-arm-l, .servo-arm-r { animation: none; }

@@ -1,11 +1,14 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { SectionHead } from "./SectionHead";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { useT } from "@/i18n";
 
-/** What's new: the next release, v2.0 Robot Battles, as one wide teaser. */
+/** What's new: the next release, v2.0 Robot Battles, as one wide teaser, plus a way into the full log. */
 
 export function WhatsNew() {
-  const w = useT().whatsNew;
+  const t = useT();
+  const w = t.whatsNew;
   return (
     <section id="whats-new" className="scroll-mt-20 bg-wb-canvas pt-28 font-ui text-wb-ink sm:pt-36">
       <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
@@ -13,20 +16,16 @@ export function WhatsNew() {
         <div className="mt-12">
           <TeaserCard />
         </div>
+        <Link
+          to="/updates"
+          className="group mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold text-wb-ink-2 transition-colors hover:text-wb-ink"
+        >
+          {t.updates.seeAll}
+          <ArrowRight aria-hidden className="h-4 w-4 text-wb-orange transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );
-}
-
-const V2_LAUNCH = new Date("2026-12-01T00:00:00");
-
-/** Whole days until v2.0; null until mounted so server and client markup match. */
-function useDaysToLaunch() {
-  const [days, setDays] = useState<number | null>(null);
-  useEffect(() => {
-    setDays(Math.max(0, Math.ceil((V2_LAUNCH.getTime() - Date.now()) / 86_400_000)));
-  }, []);
-  return days;
 }
 
 type BotProps = { className?: string; style?: CSSProperties };
@@ -132,7 +131,6 @@ function SawBot({ className, style }: BotProps) {
 
 /** v2.0 Robot Battles: copy on the left, a gunner and a saw-bot squaring up on an arena floor on the right. */
 function TeaserCard() {
-  const days = useDaysToLaunch();
   const w = useT().whatsNew;
   // Solid black cut-outs with a cool rim light; the stage glow behind them does the rest.
   const silhouette = "drop-shadow(0 0 1px rgba(255,255,255,0.55)) drop-shadow(0 0 10px rgba(190,220,255,0.18))";
@@ -168,16 +166,6 @@ function TeaserCard() {
           >
             {w.notify}
           </a>
-          <p className="ms-auto text-end font-key text-[12px] leading-tight text-white/55">
-            {days === null ? (
-              w.date
-            ) : (
-              <>
-                <span className="block font-brand text-[26px] font-bold tracking-tight text-white">{days}</span>
-                {w.daysToGo}
-              </>
-            )}
-          </p>
         </div>
       </div>
 

@@ -101,7 +101,6 @@ export const en = {
     desc: "Build a fighter, code its moves, then battle your friends' robots in the arena.",
     kicker: "Same real physics. Last robot standing wins.",
     notify: "Get notified",
-    daysToGo: "days to go",
   },
   faq: {
     eyebrow: "FAQ",
@@ -189,6 +188,14 @@ export const en = {
     atumx: "AtumX",
     address: "Anna University Incubation, Chennai, India",
     language: "Language",
+    updates: "What's new",
+  },
+  // Announcement bar + homepage link only. The /updates page itself is English (src/data/updates.ts).
+  updates: {
+    seeWhatsNew: "See what's new",
+    dismiss: "Dismiss",
+    new: "New",
+    seeAll: "See all updates",
   },
 };
 
