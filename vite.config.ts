@@ -15,4 +15,6 @@ export default defineConfig({
   // Force-on the Nitro production build and hard-pin Vercel as the deploy target.
   // (Auto mode only builds the server inside Lovable's sandbox; this enables it for self-hosting.)
   nitro: { preset: "vercel" },
+  // Dev server only: let ngrok tunnels reach it (free ngrok URLs change every session, so allow the whole domain).
+  vite: { server: { allowedHosts: [".ngrok-free.dev"] } },
 });
