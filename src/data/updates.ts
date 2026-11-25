@@ -43,6 +43,15 @@ export type Update = {
 
 export const UPDATES: Update[] = [
   {
+    id: "new-components-1",
+    date: "2026-11-25",
+    tags: ["new"],
+    title: "12 new robot parts",
+    summary:
+      "A gripper that picks things up, a 16-servo PCA9685 driver, stepper and encoder motors, continuous servos, the L298N motor driver, new wheels and more. Each one wires, codes and moves like the real part.",
+    cta: { label: "Open my robots", to: "/dashboard" },
+  },
+  {
     id: "robot-battles",
     version: "v2.0",
     date: "2026-12-01",
